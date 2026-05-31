@@ -6,6 +6,9 @@ import { parrotDetails } from "@/data/parrots";
 import FacilityCard from "@/components/FacilityCard";
 import SearchFilters from "@/components/SearchFilters";
 import ParrotModal from "@/components/ParrotModal";
+import PageShell from "@/components/ui/PageShell";
+import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 export default function FacilitiesPage() {
   const [selectedPrefecture, setSelectedPrefecture] = useState("");
@@ -35,50 +38,51 @@ export default function FacilitiesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20 lg:pb-0">
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <div className="mb-8 text-center">
-          <h1 className="mb-3 text-4xl font-bold text-gray-900">インコが見られる施設検索</h1>
-          <p className="text-lg text-gray-600">日本全国のインコ・オウムに会える動物園や鳥カフェを探そう</p>
-        </div>
+    <PageShell width="wide" className="lg:pb-8">
+      <header className="mb-8 text-center">
+        <p className="text-sm font-bold text-primary">施設検索</p>
+        <h1 className="mt-1 text-2xl font-bold text-foreground md:text-3xl">インコが見られる施設</h1>
+        <p className="mt-2 text-muted">日本全国のインコ・オウムに会える動物園や鳥カフェを探そう</p>
+      </header>
 
-        <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
-          <aside>
-            <SearchFilters
-              selectedPrefecture={selectedPrefecture}
-              selectedParrot={selectedParrot}
-              prefectures={allPrefectures}
-              parrotTypes={allParrotTypes}
-              onPrefectureChange={setSelectedPrefecture}
-              onParrotChange={setSelectedParrot}
-              onReset={handleReset}
-            />
-          </aside>
+      <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
+        <aside>
+          <SearchFilters
+            selectedPrefecture={selectedPrefecture}
+            selectedParrot={selectedParrot}
+            prefectures={allPrefectures}
+            parrotTypes={allParrotTypes}
+            onPrefectureChange={setSelectedPrefecture}
+            onParrotChange={setSelectedParrot}
+            onReset={handleReset}
+          />
+        </aside>
 
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <p className="text-sm text-gray-600">{filteredFacilities.length}件の施設が見つかりました</p>
+        <div>
+          <p className="mb-4 text-sm text-muted">
+            <span className="font-display font-bold text-foreground">{filteredFacilities.length}</span>件の施設が見つかりました
+          </p>
+
+          {filteredFacilities.length === 0 ? (
+            <EmptyState
+              title="条件に一致する施設が見つかりませんでした"
+              description="都道府県やインコの種類を変えて、もう一度検索してみてください"
+            >
+              <Button variant="primary" onClick={handleReset} className="mt-4">
+                条件をリセット
+              </Button>
+            </EmptyState>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {filteredFacilities.map(facility => (
+                <FacilityCard key={facility.id} facility={facility} onParrotClick={handleParrotClick} />
+              ))}
             </div>
-
-            {filteredFacilities.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-gray-300 bg-white p-12 text-center">
-                <p className="text-gray-500">条件に一致する施設が見つかりませんでした。</p>
-                <button onClick={handleReset} className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
-                  条件をリセット
-                </button>
-              </div>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2">
-                {filteredFacilities.map(facility => (
-                  <FacilityCard key={facility.id} facility={facility} onParrotClick={handleParrotClick} />
-                ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
 
       <ParrotModal parrot={selectedParrotDetail ? parrotDetails[selectedParrotDetail] : null} onClose={handleCloseModal} />
-    </main>
+    </PageShell>
   );
 }

@@ -9,23 +9,19 @@ import RecordSummary from "@/components/diary/RecordSummary";
 import LocalStorageNotice from "@/components/diary/LocalStorageNotice";
 import DateNavigator from "@/components/diary/DateNavigator";
 import CalendarModal from "@/components/diary/CalendarModal";
+import PageShell from "@/components/ui/PageShell";
+import Card from "@/components/ui/Card";
+import Badge from "@/components/ui/Badge";
+import LoadingState from "@/components/ui/LoadingState";
 
 export default function TodayPage() {
   const today = getTodayKey();
   const [isEditing, setIsEditing] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  const {
-    selectedDate,
-    currentRecord,
-    photoUrl,
-    recordDates,
-    isLoading,
-    init,
-    setSelectedDate,
-    loadRecordForDate,
-    loadRecordDates,
-  } = useDiaryStore();
+  const { selectedDate, currentRecord, photoUrl, recordDates, isLoading, init, setSelectedDate, loadRecordForDate, loadRecordDates } = useDiaryStore();
+
+  const isToday = selectedDate === today;
 
   useEffect(() => {
     init();
@@ -36,9 +32,7 @@ export default function TodayPage() {
     setIsEditing(false);
   }, [selectedDate, loadRecordForDate]);
 
-  const hasRecord =
-    currentRecord &&
-    (currentRecord.weightGrams !== undefined || currentRecord.memo || currentRecord.photoId);
+  const hasRecord = currentRecord && (currentRecord.weightGrams !== undefined || currentRecord.memo || currentRecord.photoId);
 
   const handlePrevDay = () => {
     setSelectedDate(addDays(selectedDate, -1));
@@ -56,37 +50,40 @@ export default function TodayPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-24 lg:pb-8">
-      <div className="mx-auto max-w-lg px-4 py-8">
-        <header className="mb-6">
+    <PageShell width="narrow">
+      <div className="space-y-4">
+        <header>
           <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm font-medium text-blue-600">日記</p>
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-medium ${
-                hasRecord ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-              }`}
-            >
-              {hasRecord ? "記録済み" : "未記録"}
-            </span>
+            <div className="flex items-center justify-center gap-2">
+              <p className="text-sm font-bold text-primary">日記</p>
+              {isToday && (
+                <span
+                  className="flex h-6 w-8 shrink-0 flex-col items-center justify-center rounded-lg border border-fields/50 bg-fields text-[10px] font-bold leading-none text-foreground"
+                  aria-label="今日"
+                >
+                  今日
+                </span>
+              )}
+            </div>
+            <Badge variant={hasRecord ? "success" : "muted"}>{hasRecord ? "記録済み" : "未記録"}</Badge>
           </div>
-          <DateNavigator
-            selectedDate={selectedDate}
-            onPrevDay={handlePrevDay}
-            onNextDay={handleNextDay}
-            onOpenCalendar={() => setIsCalendarOpen(true)}
-          />
+          <Card padding="sm">
+            <DateNavigator selectedDate={selectedDate} onPrevDay={handlePrevDay} onNextDay={handleNextDay} onOpenCalendar={() => setIsCalendarOpen(true)} />
+          </Card>
         </header>
 
         <LocalStorageNotice />
 
         {isLoading ? (
-          <div className="rounded-xl bg-white p-8 text-center text-sm text-gray-500">読み込み中...</div>
+          <Card>
+            <LoadingState />
+          </Card>
         ) : hasRecord && !isEditing ? (
-          <div className="rounded-xl bg-white p-5 shadow-sm">
+          <Card>
             <RecordSummary record={currentRecord!} photoUrl={photoUrl} onEdit={() => setIsEditing(true)} />
-          </div>
+          </Card>
         ) : (
-          <div className="rounded-xl bg-white p-5 shadow-sm">
+          <Card>
             <DiaryForm
               date={selectedDate}
               record={currentRecord}
@@ -98,30 +95,23 @@ export default function TodayPage() {
               }}
               onCancel={hasRecord ? () => setIsEditing(false) : undefined}
             />
-          </div>
+          </Card>
         )}
 
-        <Link
-          href="/weight"
-          className="mt-8 flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-blue-300 hover:shadow-md"
-        >
-          <div>
-            <p className="text-sm font-semibold text-gray-900">体重の推移を見る</p>
-            <p className="mt-0.5 text-xs text-gray-500">1週間・1ヶ月・1年のグラフを確認</p>
-          </div>
-          <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+        <Link href="/weight" className="block">
+          <Card hover className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-bold text-foreground">体重の推移を見る</p>
+              <p className="mt-0.5 text-xs text-muted">1週間・1ヶ月・1年のグラフを確認</p>
+            </div>
+            <svg className="h-5 w-5 shrink-0 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Card>
         </Link>
       </div>
 
-      <CalendarModal
-        isOpen={isCalendarOpen}
-        selectedDate={selectedDate}
-        recordDates={recordDates}
-        onSelectDate={handleSelectDate}
-        onClose={() => setIsCalendarOpen(false)}
-      />
-    </main>
+      <CalendarModal isOpen={isCalendarOpen} selectedDate={selectedDate} recordDates={recordDates} onSelectDate={handleSelectDate} onClose={() => setIsCalendarOpen(false)} />
+    </PageShell>
   );
 }

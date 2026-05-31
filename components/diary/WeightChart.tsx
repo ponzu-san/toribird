@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import type { DailyRecord, WeightPeriod } from "@/types/diary";
 import { formatShortDate } from "@/lib/utils/date";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface WeightChartProps {
   records: DailyRecord[];
@@ -17,6 +18,8 @@ const PERIOD_LABELS: Record<WeightPeriod, string> = {
   365: "直近1年",
   all: "全期間",
 };
+
+const CHART_PRIMARY = "#1785e4";
 
 function getXAxisInterval(dataLength: number, period: WeightPeriod): number | "preserveStartEnd" {
   if (dataLength <= 7) return 0;
@@ -38,38 +41,39 @@ export default function WeightChart({ records, period, size = "compact" }: Weigh
 
   if (chartData.length < 2) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-8 text-center">
-        <p className="text-sm text-gray-500">記録が増えるとグラフが表示されます</p>
-        <p className="mt-1 text-xs text-gray-400">体重を2日分以上記録してみましょう</p>
-      </div>
+      <EmptyState
+        title="記録が増えるとグラフが表示されます"
+        description="体重を2日分以上記録してみましょう"
+      />
     );
   }
 
   const weights = chartData.map(d => d.weight as number);
   const minWeight = Math.floor(Math.min(...weights) - 5);
   const maxWeight = Math.ceil(Math.max(...weights) + 5);
-  const chartHeight = size === "full" ? "h-72" : "h-48";
   const xInterval = getXAxisInterval(chartData.length, period);
 
+  const heightClass = size === "full" ? "h-64 lg:h-72" : "h-48";
+
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4">
-      <h3 className="mb-4 text-sm font-semibold text-gray-700">体重の推移（{PERIOD_LABELS[period]}）</h3>
-      <div className={`w-full ${chartHeight}`}>
+    <div className="rounded-2xl border border-border bg-surface-elevated p-5 shadow-pop">
+      <h3 className="mb-3 text-sm font-bold text-foreground">体重の推移（{PERIOD_LABELS[period]}）</h3>
+      <div className={`w-full ${heightClass}`}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e6e4" />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 11, fill: "#6b7280" }}
+              tick={{ fontSize: 11, fill: "#5c6b7a" }}
               tickLine={false}
-              axisLine={{ stroke: "#e5e7eb" }}
+              axisLine={{ stroke: "#e2e6e4" }}
               interval={xInterval}
             />
             <YAxis
               domain={[minWeight, maxWeight]}
-              tick={{ fontSize: 11, fill: "#6b7280" }}
+              tick={{ fontSize: 11, fill: "#5c6b7a" }}
               tickLine={false}
-              axisLine={{ stroke: "#e5e7eb" }}
+              axisLine={{ stroke: "#e2e6e4" }}
               width={40}
               tickFormatter={v => `${v}g`}
             />
@@ -79,9 +83,21 @@ export default function WeightChart({ records, period, size = "compact" }: Weigh
                 const item = payload?.[0]?.payload;
                 return item?.date ?? "";
               }}
-              contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }}
+              contentStyle={{
+                borderRadius: "12px",
+                border: "1px solid #e2e6e4",
+                fontSize: "12px",
+                boxShadow: "var(--shadow-pop)",
+              }}
             />
-            <Line type="monotone" dataKey="weight" stroke="#2563eb" strokeWidth={2} dot={{ r: 3, fill: "#2563eb" }} activeDot={{ r: 5 }} />
+            <Line
+              type="monotone"
+              dataKey="weight"
+              stroke={CHART_PRIMARY}
+              strokeWidth={2.5}
+              dot={{ r: 4, fill: CHART_PRIMARY }}
+              activeDot={{ r: 6 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>

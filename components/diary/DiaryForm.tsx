@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import type { DailyRecord } from "@/types/diary";
 import { MAX_MEMO_LENGTH, useDiaryStore } from "@/lib/stores/diaryStore";
 import PhotoPicker from "./PhotoPicker";
+import Button from "@/components/ui/Button";
+
+const inputClass =
+  "w-full rounded-2xl border border-border bg-surface-elevated px-3 py-2.5 text-foreground placeholder:text-muted transition focus:border-primary focus:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary/25 lg:px-4";
 
 interface DiaryFormProps {
   date: string;
@@ -47,9 +51,9 @@ export default function DiaryForm({ date, record, photoUrl, onSaved, onCancel }:
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="weight" className="mb-2 block text-sm font-medium text-gray-700">
+        <label htmlFor="weight" className="mb-2 block text-sm font-semibold text-muted">
           体重（g）
         </label>
         <input
@@ -61,12 +65,12 @@ export default function DiaryForm({ date, record, photoUrl, onSaved, onCancel }:
           placeholder="例: 95.5"
           value={weight}
           onChange={e => setWeight(e.target.value)}
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          className={`font-display ${inputClass}`}
         />
       </div>
 
       <div>
-        <label htmlFor="memo" className="mb-2 block text-sm font-medium text-gray-700">
+        <label htmlFor="memo" className="mb-2 block text-sm font-semibold text-muted">
           メモ
         </label>
         <textarea
@@ -76,9 +80,9 @@ export default function DiaryForm({ date, record, photoUrl, onSaved, onCancel }:
           placeholder="今日の様子、ごはん、おもちゃなど..."
           value={memo}
           onChange={e => setMemo(e.target.value)}
-          className="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          className={`resize-none ${inputClass}`}
         />
-        <p className="mt-1 text-right text-xs text-gray-400">
+        <p className="mt-1.5 text-right text-xs text-muted">
           {memo.length}/{MAX_MEMO_LENGTH}
         </p>
       </div>
@@ -92,31 +96,21 @@ export default function DiaryForm({ date, record, photoUrl, onSaved, onCancel }:
         onRemovePhoto={() => setRemovePhoto(true)}
       />
 
-      {error && (
-        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-      )}
+      {error && <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}
 
       {saveMessage && (
-        <div className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">{saveMessage}</div>
+        <div className="rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{saveMessage}</div>
       )}
 
       <div className="flex gap-3">
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex-1 rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-          >
+          <Button type="button" variant="secondary" onClick={onCancel} className="flex-1">
             キャンセル
-          </button>
+          </Button>
         )}
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="flex-1 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
+        <Button type="submit" disabled={isSaving} fullWidth className={onCancel ? "flex-1" : ""}>
           {isSaving ? "保存中..." : "保存する"}
-        </button>
+        </Button>
       </div>
     </form>
   );

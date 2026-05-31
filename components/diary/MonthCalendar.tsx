@@ -40,21 +40,35 @@ export default function MonthCalendar({
   const blanks = Array.from({ length: startWeekday });
 
   return (
-    <div className={variant === "plain" ? "p-0" : "rounded-xl border border-gray-200 bg-white p-4"}>
+    <div
+      className={
+        variant === "plain"
+          ? "p-0"
+          : "rounded-2xl border border-border bg-surface-elevated p-4 shadow-pop lg:p-5"
+      }
+    >
       <div className="mb-4 flex items-center justify-between">
-        <button onClick={onPrevMonth} className="rounded-lg p-2 text-gray-600 transition hover:bg-gray-100" aria-label="前月">
+        <button
+          onClick={onPrevMonth}
+          className="rounded-xl border border-transparent p-2 text-muted transition hover:border-border hover:bg-sky-soft hover:text-primary"
+          aria-label="前月"
+        >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
         <div className="text-center">
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2 className="font-display text-lg font-bold text-foreground">
             {year}年{month}月
           </h2>
         </div>
 
-        <button onClick={onNextMonth} className="rounded-lg p-2 text-gray-600 transition hover:bg-gray-100" aria-label="次月">
+        <button
+          onClick={onNextMonth}
+          className="rounded-xl border border-transparent p-2 text-muted transition hover:border-border hover:bg-sky-soft hover:text-primary"
+          aria-label="次月"
+        >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
@@ -63,7 +77,10 @@ export default function MonthCalendar({
 
       <div className="mb-3 grid grid-cols-7 gap-1">
         {WEEKDAYS.map((day, i) => (
-          <div key={day} className={`py-1 text-center text-xs font-medium ${i === 0 ? "text-red-500" : i === 6 ? "text-blue-500" : "text-gray-500"}`}>
+          <div
+            key={day}
+            className={`py-1 text-center text-xs font-bold ${i === 0 ? "text-rose-500" : i === 6 ? "text-primary" : "text-muted"}`}
+          >
             {day}
           </div>
         ))}
@@ -87,24 +104,22 @@ export default function MonthCalendar({
               key={dateKey}
               disabled={isFuture}
               onClick={() => onSelectDate(dateKey)}
-              className={`relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm transition ${
+              className={`relative flex aspect-square flex-col items-center justify-center rounded-xl text-sm font-medium transition ${
                 isFuture
-                  ? "cursor-not-allowed text-gray-300"
+                  ? "cursor-not-allowed text-muted/40"
                   : isSelected
-                    ? "bg-blue-600 font-bold text-white"
+                    ? "border border-primary-dark bg-primary font-bold text-white shadow-pop"
                     : isToday
-                      ? "bg-blue-50 font-semibold text-blue-700 hover:bg-blue-100"
+                      ? "border border-primary bg-sky-soft font-bold text-primary hover:bg-sky-soft/70"
                       : weekday === 0
-                        ? "text-red-600 hover:bg-red-50"
+                        ? "text-rose-500 hover:bg-rose-50"
                         : weekday === 6
-                          ? "text-blue-600 hover:bg-blue-50"
-                          : "text-gray-700 hover:bg-gray-100"
+                          ? "text-primary hover:bg-sky-soft"
+                          : "text-foreground hover:bg-sky-soft/60"
               }`}
             >
               {day}
-              {hasRecord && !isSelected && (
-                <span className="absolute bottom-1 h-1.5 w-1.5 rounded-full bg-green-500" />
-              )}
+              {hasRecord && !isSelected && <span className="absolute bottom-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />}
             </button>
           );
         })}
@@ -112,7 +127,7 @@ export default function MonthCalendar({
 
       <button
         onClick={onGoToday}
-        className="mt-4 w-full rounded-lg border border-gray-200 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+        className="mt-4 w-full rounded-2xl border border-border py-2.5 text-sm font-semibold text-muted transition hover:border-primary hover:bg-sky-soft hover:text-primary"
       >
         今日（{formatDisplayDate(today)}）へ
       </button>

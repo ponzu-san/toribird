@@ -16,7 +16,7 @@ interface WeightPeriodSelectorProps {
 
 export default function WeightPeriodSelector({ selected, onChange }: WeightPeriodSelectorProps) {
   return (
-    <div className="grid grid-cols-4 gap-1 rounded-xl bg-gray-100 p-1">
+    <div className="grid grid-cols-4 gap-1.5 rounded-2xl border border-border bg-surface p-1.5">
       {PERIODS.map(({ value, label }) => {
         const isActive = selected === value;
         return (
@@ -24,8 +24,10 @@ export default function WeightPeriodSelector({ selected, onChange }: WeightPerio
             key={String(value)}
             type="button"
             onClick={() => onChange(value)}
-            className={`rounded-lg py-2 text-xs font-medium transition sm:text-sm ${
-              isActive ? "bg-white text-blue-700 shadow-sm" : "text-gray-600 hover:text-gray-900"
+            className={`rounded-xl py-2.5 text-xs font-semibold transition-all sm:text-sm ${
+              isActive
+                ? "border border-primary-dark bg-primary text-white shadow-pop"
+                : "border border-transparent text-muted hover:border-border hover:bg-sky-soft hover:text-foreground"
             }`}
           >
             {label}

@@ -34,7 +34,7 @@ export default function ImageCropModal({ imageSrc, onConfirm, onCancel }: ImageC
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-black">
+    <div className="fixed inset-0 z-50 flex flex-col bg-foreground">
       <div className="relative flex-1">
         <Cropper
           image={imageSrc}
@@ -47,9 +47,9 @@ export default function ImageCropModal({ imageSrc, onConfirm, onCancel }: ImageC
         />
       </div>
 
-      <div className="space-y-4 bg-gray-900 px-4 py-4">
+      <div className="space-y-4 border-t border-border bg-surface-elevated px-4 py-4">
         <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-400">ズーム</span>
+          <span className="text-xs font-semibold text-muted">ズーム</span>
           <input
             type="range"
             min={1}
@@ -57,7 +57,7 @@ export default function ImageCropModal({ imageSrc, onConfirm, onCancel }: ImageC
             step={0.1}
             value={zoom}
             onChange={e => setZoom(Number(e.target.value))}
-            className="flex-1"
+            className="flex-1 accent-primary"
           />
         </div>
 
@@ -66,7 +66,7 @@ export default function ImageCropModal({ imageSrc, onConfirm, onCancel }: ImageC
             type="button"
             onClick={onCancel}
             disabled={isProcessing}
-            className="flex-1 rounded-xl border border-gray-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:opacity-60"
+            className="flex-1 rounded-2xl border border-border px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-sky-soft disabled:opacity-60"
           >
             キャンセル
           </button>
@@ -74,7 +74,7 @@ export default function ImageCropModal({ imageSrc, onConfirm, onCancel }: ImageC
             type="button"
             onClick={handleConfirm}
             disabled={isProcessing || !croppedAreaPixels}
-            className="flex-1 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex-1 rounded-2xl border border-primary-dark bg-primary px-4 py-3 text-sm font-semibold text-white shadow-pop transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isProcessing ? "処理中..." : "確定"}
           </button>

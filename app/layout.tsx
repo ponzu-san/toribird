@@ -1,5 +1,19 @@
+import { Noto_Sans_JP, Quicksand } from "next/font/google";
 import "./globals.scss";
 import Navigation from "@/components/Navigation";
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ["latin"],
+  variable: "--font-noto",
+  display: "swap",
+});
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-quicksand",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Toribird - インコの飼育日記",
@@ -8,8 +22,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja">
-      <body className="bg-gray-50 text-gray-900">
+    <html lang="ja" className={`${notoSansJP.variable} ${quicksand.variable}`}>
+      <body className="min-h-screen bg-surface text-foreground antialiased">
         <Navigation />
         {children}
       </body>

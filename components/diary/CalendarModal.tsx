@@ -52,17 +52,17 @@ export default function CalendarModal({ isOpen, selectedDate, recordDates, onSel
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-foreground/50" />
 
       <div
-        className="relative z-10 w-full max-w-md rounded-2xl bg-white shadow-2xl"
+        className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-border bg-surface-elevated shadow-pop-hover"
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-          <h2 className="text-lg font-bold text-gray-900">日付を選ぶ</h2>
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+          <h2 className="text-lg font-bold text-foreground">日付を選ぶ</h2>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-muted transition hover:border-primary hover:bg-sky-soft hover:text-primary"
             aria-label="閉じる"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@ export default function CalendarModal({ isOpen, selectedDate, recordDates, onSel
           </button>
         </div>
 
-        <div className="p-4">
+        <div className="p-6">
           <MonthCalendar
             variant="plain"
             monthKey={monthKey}

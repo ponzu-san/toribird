@@ -1,6 +1,7 @@
 "use client";
 
 import type { DailyRecord } from "@/types/diary";
+import Button from "@/components/ui/Button";
 
 interface RecordSummaryProps {
   record: DailyRecord;
@@ -10,39 +11,38 @@ interface RecordSummaryProps {
 
 export default function RecordSummary({ record, photoUrl, onEdit }: RecordSummaryProps) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {record.weightGrams !== undefined && (
-        <div className="rounded-xl bg-blue-50 px-5 py-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-blue-600">体重</p>
-          <p className="mt-1 text-3xl font-bold text-blue-900">
+        <div className="flex items-baseline gap-2 rounded-2xl border border-border bg-sky-soft p-4">
+          <span className="shrink-0 text-sm font-bold text-primary">体重</span>
+          <p className="font-display text-2xl font-bold text-primary sm:text-3xl">
             {record.weightGrams}
-            <span className="ml-1 text-lg font-medium">g</span>
+            <span className="ml-0.5 text-base font-semibold text-foreground sm:text-lg">g</span>
           </p>
         </div>
       )}
 
       {record.memo && (
         <div>
-          <p className="mb-2 text-sm font-medium text-gray-700">メモ</p>
-          <p className="whitespace-pre-wrap rounded-xl bg-gray-50 px-4 py-3 text-gray-700">{record.memo}</p>
+          <p className="mb-1.5 text-sm font-semibold text-muted">メモ</p>
+          <p className="whitespace-pre-wrap rounded-2xl border border-border bg-surface px-4 py-3 text-sm leading-relaxed text-foreground">
+            {record.memo}
+          </p>
         </div>
       )}
 
       {photoUrl && (
         <div>
-          <p className="mb-2 text-sm font-medium text-gray-700">写真</p>
-          <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+          <p className="mb-1.5 text-sm font-semibold text-muted">写真</p>
+          <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border border-border bg-surface">
             <img src={photoUrl} alt="日記の写真" className="max-h-full max-w-full object-contain" />
           </div>
         </div>
       )}
 
-      <button
-        onClick={onEdit}
-        className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-      >
+      <Button variant="secondary" fullWidth onClick={onEdit}>
         編集する
-      </button>
+      </Button>
     </div>
   );
 }

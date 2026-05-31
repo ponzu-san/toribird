@@ -9,6 +9,9 @@ interface DateNavigatorProps {
   onOpenCalendar: () => void;
 }
 
+const navBtnClass =
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-border bg-surface-elevated text-muted shadow-pop transition hover:border-primary hover:bg-sky-soft hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 lg:h-11 lg:w-11";
+
 export default function DateNavigator({ selectedDate, onPrevDay, onNextDay, onOpenCalendar }: DateNavigatorProps) {
   const today = getTodayKey();
   const isToday = selectedDate === today;
@@ -16,24 +19,18 @@ export default function DateNavigator({ selectedDate, onPrevDay, onNextDay, onOp
 
   return (
     <div className="flex items-center gap-2">
-      <button
-        type="button"
-        onClick={onPrevDay}
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50"
-        aria-label="前日"
-      >
+      <button type="button" onClick={onPrevDay} className={navBtnClass} aria-label="前日">
         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
-      <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
-        <p className="truncate text-lg font-bold text-gray-900">{formatDisplayDate(selectedDate)}</p>
-        {isToday && <span className="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">今日</span>}
+      <div className="flex min-w-0 flex-1 flex-row items-center justify-center gap-1.5">
+        <p className="font-display whitespace-nowrap text-base font-bold text-foreground sm:text-lg">{formatDisplayDate(selectedDate)}</p>
         <button
           type="button"
           onClick={onOpenCalendar}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-blue-600"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-transparent text-muted transition hover:border-border hover:bg-sky-soft hover:text-primary"
           aria-label="カレンダーを開く"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,13 +39,7 @@ export default function DateNavigator({ selectedDate, onPrevDay, onNextDay, onOp
         </button>
       </div>
 
-      <button
-        type="button"
-        onClick={onNextDay}
-        disabled={isNextDisabled}
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-        aria-label="翌日"
-      >
+      <button type="button" onClick={onNextDay} disabled={isNextDisabled} className={navBtnClass} aria-label="翌日">
         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>

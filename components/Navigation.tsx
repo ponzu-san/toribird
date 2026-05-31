@@ -62,7 +62,7 @@ export default function Navigation() {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-md lg:hidden">
+      <nav className="sticky top-0 z-40 border-b border-border bg-surface-elevated lg:hidden">
         <div className="flex h-14 items-center px-4">
           <Link href="/">
             <Image src="/logo.png" alt="Toribird - インコの飼育日記＆情報アプリ" width={160} height={48} className="h-11 w-auto" priority />
@@ -70,7 +70,7 @@ export default function Navigation() {
         </div>
       </nav>
 
-      <nav className="sticky top-0 z-40 hidden border-b border-gray-200 bg-white/80 backdrop-blur-md lg:block">
+      <nav className="sticky top-0 z-40 hidden border-b border-border bg-surface-elevated lg:block">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center">
@@ -84,8 +84,10 @@ export default function Navigation() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                      isActive ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                      isActive
+                        ? "border border-primary-dark bg-primary text-white shadow-pop"
+                        : "text-muted hover:bg-sky-soft hover:text-foreground"
                     }`}
                   >
                     {link.icon}
@@ -98,7 +100,7 @@ export default function Navigation() {
         </div>
       </nav>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white/80 backdrop-blur-md lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface-elevated lg:hidden">
         <div className="grid grid-cols-4">
           {links.map(link => {
             const isActive = link.match(pathname);
@@ -106,9 +108,17 @@ export default function Navigation() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition ${isActive ? "text-blue-600" : "text-gray-600"}`}
+                className={`flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-semibold transition-colors ${
+                  isActive ? "text-primary" : "text-muted"
+                }`}
               >
-                <div className={`rounded-lg p-1.5 ${isActive ? "bg-blue-100" : ""}`}>{link.icon}</div>
+                <div
+                  className={`rounded-2xl p-1.5 transition-colors ${
+                    isActive ? "border border-primary-dark bg-primary text-white shadow-pop" : ""
+                  }`}
+                >
+                  {link.icon}
+                </div>
                 {link.label}
               </Link>
             );
