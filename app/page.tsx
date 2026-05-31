@@ -1,84 +1,127 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { facilities, allPrefectures, allParrotTypes } from "@/data/facilities";
-import { parrotDetails } from "@/data/parrots";
-import FacilityCard from "@/components/FacilityCard";
-import SearchFilters from "@/components/SearchFilters";
-import ParrotModal from "@/components/ParrotModal";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useDiaryStore } from "@/lib/stores/diaryStore";
+import { addDays, getTodayKey } from "@/lib/utils/date";
+import DiaryForm from "@/components/diary/DiaryForm";
+import RecordSummary from "@/components/diary/RecordSummary";
+import LocalStorageNotice from "@/components/diary/LocalStorageNotice";
+import DateNavigator from "@/components/diary/DateNavigator";
+import CalendarModal from "@/components/diary/CalendarModal";
 
-export default function Home() {
-  const [selectedPrefecture, setSelectedPrefecture] = useState("");
-  const [selectedParrot, setSelectedParrot] = useState("");
-  const [selectedParrotDetail, setSelectedParrotDetail] = useState<string | null>(null);
+export default function TodayPage() {
+  const today = getTodayKey();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  const filteredFacilities = useMemo(() => {
-    return facilities.filter(facility => {
-      const matchesPrefecture = selectedPrefecture === "" || facility.prefecture === selectedPrefecture;
-      const matchesParrot = selectedParrot === "" || facility.parrots.includes(selectedParrot);
+  const {
+    selectedDate,
+    currentRecord,
+    photoUrl,
+    recordDates,
+    isLoading,
+    init,
+    setSelectedDate,
+    loadRecordForDate,
+    loadRecordDates,
+  } = useDiaryStore();
 
-      return matchesPrefecture && matchesParrot;
-    });
-  }, [selectedPrefecture, selectedParrot]);
+  useEffect(() => {
+    init();
+  }, [init]);
 
-  const handleReset = () => {
-    setSelectedPrefecture("");
-    setSelectedParrot("");
+  useEffect(() => {
+    loadRecordForDate(selectedDate);
+    setIsEditing(false);
+  }, [selectedDate, loadRecordForDate]);
+
+  const hasRecord =
+    currentRecord &&
+    (currentRecord.weightGrams !== undefined || currentRecord.memo || currentRecord.photoId);
+
+  const handlePrevDay = () => {
+    setSelectedDate(addDays(selectedDate, -1));
   };
 
-  const handleParrotClick = (parrotName: string) => {
-    setSelectedParrotDetail(parrotName);
+  const handleNextDay = () => {
+    const next = addDays(selectedDate, 1);
+    if (next <= today) {
+      setSelectedDate(next);
+    }
   };
 
-  const handleCloseModal = () => {
-    setSelectedParrotDetail(null);
+  const handleSelectDate = (date: string) => {
+    setSelectedDate(date);
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20 lg:pb-0">
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <div className="mb-8 text-center">
-          <h1 className="mb-3 text-4xl font-bold text-gray-900">インコが見られる施設検索</h1>
-          <p className="text-lg text-gray-600">日本全国のインコ・オウムに会える動物園や鳥カフェを探そう</p>
-        </div>
-
-        <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
-          <aside>
-            <SearchFilters
-              selectedPrefecture={selectedPrefecture}
-              selectedParrot={selectedParrot}
-              prefectures={allPrefectures}
-              parrotTypes={allParrotTypes}
-              onPrefectureChange={setSelectedPrefecture}
-              onParrotChange={setSelectedParrot}
-              onReset={handleReset}
-            />
-          </aside>
-
-          <div>
-            <div className="mb-4 flex items-center justify-between">
-              <p className="text-sm text-gray-600">{filteredFacilities.length}件の施設が見つかりました</p>
-            </div>
-
-            {filteredFacilities.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-gray-300 bg-white p-12 text-center">
-                <p className="text-gray-500">条件に一致する施設が見つかりませんでした。</p>
-                <button onClick={handleReset} className="mt-4 rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
-                  条件をリセット
-                </button>
-              </div>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2">
-                {filteredFacilities.map(facility => (
-                  <FacilityCard key={facility.id} facility={facility} onParrotClick={handleParrotClick} />
-                ))}
-              </div>
-            )}
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-24 lg:pb-8">
+      <div className="mx-auto max-w-lg px-4 py-8">
+        <header className="mb-6">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm font-medium text-blue-600">日記</p>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-medium ${
+                hasRecord ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {hasRecord ? "記録済み" : "未記録"}
+            </span>
           </div>
-        </div>
+          <DateNavigator
+            selectedDate={selectedDate}
+            onPrevDay={handlePrevDay}
+            onNextDay={handleNextDay}
+            onOpenCalendar={() => setIsCalendarOpen(true)}
+          />
+        </header>
+
+        <LocalStorageNotice />
+
+        {isLoading ? (
+          <div className="rounded-xl bg-white p-8 text-center text-sm text-gray-500">読み込み中...</div>
+        ) : hasRecord && !isEditing ? (
+          <div className="rounded-xl bg-white p-5 shadow-sm">
+            <RecordSummary record={currentRecord!} photoUrl={photoUrl} onEdit={() => setIsEditing(true)} />
+          </div>
+        ) : (
+          <div className="rounded-xl bg-white p-5 shadow-sm">
+            <DiaryForm
+              date={selectedDate}
+              record={currentRecord}
+              photoUrl={photoUrl}
+              onSaved={() => {
+                setIsEditing(false);
+                loadRecordForDate(selectedDate);
+                loadRecordDates();
+              }}
+              onCancel={hasRecord ? () => setIsEditing(false) : undefined}
+            />
+          </div>
+        )}
+
+        <Link
+          href="/weight"
+          className="mt-8 flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-blue-300 hover:shadow-md"
+        >
+          <div>
+            <p className="text-sm font-semibold text-gray-900">体重の推移を見る</p>
+            <p className="mt-0.5 text-xs text-gray-500">1週間・1ヶ月・1年のグラフを確認</p>
+          </div>
+          <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       </div>
 
-      <ParrotModal parrot={selectedParrotDetail ? parrotDetails[selectedParrotDetail] : null} onClose={handleCloseModal} />
+      <CalendarModal
+        isOpen={isCalendarOpen}
+        selectedDate={selectedDate}
+        recordDates={recordDates}
+        onSelectDate={handleSelectDate}
+        onClose={() => setIsCalendarOpen(false)}
+      />
     </main>
   );
 }

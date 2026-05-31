@@ -1,4 +1,5 @@
 import { Facility } from "@/data/facilities";
+import { sortJapanese } from "@/lib/utils/sortJa";
 
 interface FacilityCardProps {
   facility: Facility;
@@ -21,7 +22,7 @@ export default function FacilityCard({ facility, onParrotClick }: FacilityCardPr
       <div className="mb-4">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">見られるインコ</p>
         <div className="flex flex-wrap gap-2">
-          {facility.parrots.map(parrot => (
+          {sortJapanese(facility.parrots).map(parrot => (
             <button
               key={parrot}
               onClick={() => onParrotClick(parrot)}

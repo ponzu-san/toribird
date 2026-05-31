@@ -55,14 +55,14 @@ export default function ParrotModal({ parrot, onClose }: ParrotModalProps) {
         </button>
 
         <div className="overflow-hidden rounded-2xl">
-          <div className="relative h-64 md:h-128 w-full overflow-hidden bg-gradient-to-br from-blue-100 to-green-100">
+          <div className="relative h-64 md:h-112 w-full overflow-hidden bg-gradient-to-br from-blue-100 to-green-100">
             <img src={getParrotImageUrl(parrot.imageUrl)} alt={parrot.name} className="h-full w-full object-contain" />
           </div>
 
           <div className="p-6">
             <div className="mb-4">
               <h2 className="mb-2 text-3xl font-bold text-gray-900">{parrot.name}</h2>
-              <p className="text-sm italic text-gray-500">{parrot.scientificName}</p>
+              <p className="text-sm text-gray-500">{parrot.englishName}</p>
             </div>
 
             <div className="mb-4 flex items-center gap-2 text-sm">

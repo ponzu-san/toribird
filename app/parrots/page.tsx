@@ -7,7 +7,7 @@ import ParrotModal from "@/components/ParrotModal";
 export default function ParrotsPage() {
   const [selectedParrot, setSelectedParrot] = useState<ParrotDetail | null>(null);
 
-  const parrots = Object.values(parrotDetails);
+  const parrots = Object.values(parrotDetails).sort((a, b) => a.name.localeCompare(b.name, "ja"));
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 pb-20 lg:pb-0">
@@ -30,7 +30,7 @@ export default function ParrotsPage() {
 
               <div className="p-4">
                 <h3 className="mb-1 text-lg font-bold text-gray-900">{parrot.name}</h3>
-                <p className="mb-2 text-xs italic text-gray-500">{parrot.scientificName}</p>
+                <p className="mb-2 text-xs text-gray-500">{parrot.englishName}</p>
 
                 <div className="flex items-center gap-1 text-xs text-gray-600">
                   <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
