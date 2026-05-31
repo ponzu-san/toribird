@@ -43,10 +43,7 @@ export default function ParrotModal({ parrot, onClose }: ParrotModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-foreground/50" />
 
-      <div
-        className="relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl border border-border bg-surface-elevated shadow-pop-hover"
-        onClick={e => e.stopPropagation()}
-      >
+      <div className="relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl bg-surface-elevated shadow-pop-hover" onClick={e => e.stopPropagation()}>
         <button
           onClick={onClose}
           className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface-elevated text-muted shadow-pop transition hover:border-primary hover:bg-sky-soft hover:text-primary"
@@ -58,7 +55,7 @@ export default function ParrotModal({ parrot, onClose }: ParrotModalProps) {
         </button>
 
         <div className="relative h-64 w-full overflow-hidden border-b border-border bg-sky-soft/60 md:h-80">
-          <img src={getParrotImageUrl(parrot.imageUrl)} alt={parrot.name} className="h-full w-full object-contain p-4" />
+          <img src={getParrotImageUrl(parrot.imageUrl)} alt={parrot.name} className="h-full w-full object-contain" />
         </div>
 
         <div className="p-6 md:p-8">

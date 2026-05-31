@@ -62,7 +62,7 @@ export default function WeightPage() {
   return (
     <PageShell width="narrow">
       <div className="space-y-4">
-        <header>
+        <header className="mb-4 text-center">
           <p className="text-sm font-bold text-primary">体重</p>
           <h1 className="mt-0.5 text-2xl font-bold text-foreground">体重の推移</h1>
         </header>

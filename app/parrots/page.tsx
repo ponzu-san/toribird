@@ -12,7 +12,7 @@ export default function ParrotsPage() {
 
   return (
     <PageShell width="wide" className="lg:pb-8">
-      <header className="mb-8 text-center">
+      <header className="mb-4 text-center">
         <p className="text-sm font-bold text-primary">図鑑</p>
         <h1 className="mt-1 text-2xl font-bold text-foreground md:text-3xl">インコ図鑑</h1>
         <p className="mt-2 text-muted">日本の施設で会えるインコ・オウムたちの詳細情報</p>
@@ -26,11 +26,7 @@ export default function ParrotsPage() {
             className="group overflow-hidden rounded-2xl border border-border bg-surface-elevated text-left shadow-pop transition-all duration-200 hover:scale-[1.02] hover:border-primary/50 hover:shadow-pop-hover"
           >
             <div className="relative h-48 w-full overflow-hidden border-b border-border bg-sky-soft/60">
-              <img
-                src={getParrotImageUrl(parrot.imageUrl)}
-                alt={parrot.name}
-                className="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
-              />
+              <img src={getParrotImageUrl(parrot.imageUrl)} alt={parrot.name} className="h-full w-full object-contain transition duration-300 group-hover:scale-105" />
             </div>
 
             <div className="p-5">

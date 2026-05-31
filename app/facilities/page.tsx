@@ -39,7 +39,7 @@ export default function FacilitiesPage() {
 
   return (
     <PageShell width="wide" className="lg:pb-8">
-      <header className="mb-8 text-center">
+      <header className="mb-4 text-center">
         <p className="text-sm font-bold text-primary">施設検索</p>
         <h1 className="mt-1 text-2xl font-bold text-foreground md:text-3xl">インコが見られる施設</h1>
         <p className="mt-2 text-muted">日本全国のインコ・オウムに会える動物園や鳥カフェを探そう</p>
@@ -64,10 +64,7 @@ export default function FacilitiesPage() {
           </p>
 
           {filteredFacilities.length === 0 ? (
-            <EmptyState
-              title="条件に一致する施設が見つかりませんでした"
-              description="都道府県やインコの種類を変えて、もう一度検索してみてください"
-            >
+            <EmptyState title="条件に一致する施設が見つかりませんでした" description="都道府県やインコの種類を変えて、もう一度検索してみてください">
               <Button variant="primary" onClick={handleReset} className="mt-4">
                 条件をリセット
               </Button>
