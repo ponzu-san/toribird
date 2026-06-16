@@ -1,17 +1,7 @@
 import { create } from "zustand";
 import type { DailyRecord, DiaryFormData, WeightPeriod } from "@/types/diary";
-import {
-  getAllRecordDates,
-  getAllWeightRecords,
-  getPhotoById,
-  getRecordByDate,
-  getRecordsInRange,
-  savePhoto,
-  deletePhoto,
-  upsertRecord,
-  createPhotoUrl,
-} from "@/lib/db/diaryDb";
-import { compressImage } from "@/lib/utils/image";
+import { PROFILE_DEFAULT_ID } from "@/types/profile";
+import { getProfile, getAllRecordDates, getAllWeightRecords, getRecordByDate, getRecordsInRange, upsertRecord } from "@/lib/db/diaryDb";
 import { getDaysAgoKey, getTodayKey } from "@/lib/utils/date";
 
 const MAX_MEMO_LENGTH = 500;
@@ -22,7 +12,6 @@ type DiaryState = {
   recordDates: string[];
   weightRecords: DailyRecord[];
   weightPeriod: WeightPeriod;
-  photoUrl: string | null;
   isLoading: boolean;
   isSaving: boolean;
   saveMessage: string | null;
@@ -38,11 +27,7 @@ type DiaryState = {
   init: () => Promise<void>;
 };
 
-function revokePhotoUrl(url: string | null) {
-  if (url) URL.revokeObjectURL(url);
-}
-
-function validateFormData(data: DiaryFormData, existingPhotoId?: string): string | null {
+function validateFormData(data: DiaryFormData): string | null {
   if (data.weightGrams !== undefined && data.weightGrams !== null) {
     if (Number.isNaN(data.weightGrams) || data.weightGrams <= 0) {
       return "体重は0より大きい数値を入力してください";
@@ -58,11 +43,9 @@ function validateFormData(data: DiaryFormData, existingPhotoId?: string): string
 
   const hasWeight = data.weightGrams !== undefined && data.weightGrams !== null && !Number.isNaN(data.weightGrams);
   const hasMemo = !!data.memo?.trim();
-  const hasNewPhoto = !!data.photoFile;
-  const hasExistingPhoto = !!existingPhotoId && !data.removePhoto;
 
-  if (!hasWeight && !hasMemo && !hasNewPhoto && !hasExistingPhoto) {
-    return "体重・メモ・写真のいずれかを入力してください";
+  if (!hasWeight && !hasMemo) {
+    return "体重・メモのいずれかを入力してください";
   }
 
   return null;
@@ -74,7 +57,6 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   recordDates: [],
   weightRecords: [],
   weightPeriod: 30,
-  photoUrl: null,
   isLoading: false,
   isSaving: false,
   saveMessage: null,
@@ -86,22 +68,12 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 
   loadRecordForDate: async date => {
     set({ isLoading: true, error: null });
-    revokePhotoUrl(get().photoUrl);
 
     try {
       const record = await getRecordByDate(date);
-      let photoUrl: string | null = null;
-
-      if (record?.photoId) {
-        const photo = await getPhotoById(record.photoId);
-        if (photo) {
-          photoUrl = createPhotoUrl(photo.blob);
-        }
-      }
-
-      set({ currentRecord: record ?? null, photoUrl, isLoading: false });
+      set({ currentRecord: record ?? null, isLoading: false });
     } catch {
-      set({ error: "記録の読み込みに失敗しました", isLoading: false, photoUrl: null });
+      set({ error: "記録の読み込みに失敗しました", isLoading: false });
     }
   },
 
@@ -139,8 +111,7 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   },
 
   saveDiaryEntry: async (date, data) => {
-    const existing = await getRecordByDate(date);
-    const validationError = validateFormData(data, existing?.photoId);
+    const validationError = validateFormData(data);
     if (validationError) {
       set({ error: validationError, saveMessage: null });
       return false;
@@ -149,29 +120,16 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
     set({ isSaving: true, error: null, saveMessage: null });
 
     try {
-      let photoId = existing?.photoId;
-
-      if (data.removePhoto && photoId) {
-        await deletePhoto(photoId);
-        photoId = undefined;
-      }
-
-      if (data.photoFile) {
-        if (photoId) {
-          await deletePhoto(photoId);
-        }
-        const compressed = await compressImage(data.photoFile);
-        const photo = await savePhoto(compressed);
-        photoId = photo.id;
-      }
-
       const hasWeight = data.weightGrams !== undefined && data.weightGrams !== null && !Number.isNaN(data.weightGrams);
       const hasMemo = data.memo !== undefined && data.memo.trim() !== "";
+
+      const profile = await getProfile(PROFILE_DEFAULT_ID);
+      const parrotId = profile ? PROFILE_DEFAULT_ID : undefined;
 
       await upsertRecord(date, {
         weightGrams: hasWeight ? data.weightGrams : undefined,
         memo: hasMemo ? data.memo!.trim() : undefined,
-        photoId,
+        parrotId,
       });
 
       await get().loadRecordForDate(date);

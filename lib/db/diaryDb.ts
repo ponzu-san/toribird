@@ -1,15 +1,21 @@
 import Dexie, { type EntityTable } from "dexie";
-import type { DailyRecord, Photo } from "@/types/diary";
+import type { DailyRecord } from "@/types/diary";
+import type { ParrotProfile } from "@/types/profile";
+import { PROFILE_DEFAULT_ID } from "@/types/profile";
 
 class DiaryDatabase extends Dexie {
   dailyRecords!: EntityTable<DailyRecord, "id">;
-  photos!: EntityTable<Photo, "id">;
+  profiles!: EntityTable<ParrotProfile, "id">;
 
   constructor() {
     super("toribird-diary");
     this.version(1).stores({
       dailyRecords: "id, &date, parrotId, updatedAt",
       photos: "id, createdAt",
+    });
+    this.version(2).stores({
+      dailyRecords: "id, &date, parrotId, updatedAt",
+      profiles: "id, updatedAt",
     });
   }
 }
@@ -34,23 +40,31 @@ export async function getAllWeightRecords(): Promise<DailyRecord[]> {
   return records.filter(r => r.weightGrams !== undefined);
 }
 
-export async function getPhotoById(id: string): Promise<Photo | undefined> {
-  return db.photos.get(id);
+export async function getProfile(id: string = PROFILE_DEFAULT_ID): Promise<ParrotProfile | undefined> {
+  return db.profiles.get(id);
 }
 
-export async function savePhoto(blob: Blob): Promise<Photo> {
-  const photo: Photo = {
-    id: crypto.randomUUID(),
-    blob,
-    mimeType: blob.type || "image/jpeg",
-    createdAt: new Date().toISOString(),
+export async function upsertProfile(data: Omit<ParrotProfile, "id" | "updatedAt"> & { id?: string }): Promise<ParrotProfile> {
+  const id = data.id ?? PROFILE_DEFAULT_ID;
+  const existing = await db.profiles.get(id);
+  const now = new Date().toISOString();
+
+  const profile: ParrotProfile = {
+    id,
+    name: data.name,
+    speciesId: data.speciesId,
+    speciesCustom: data.speciesCustom,
+    bio: data.bio,
+    updatedAt: now,
   };
-  await db.photos.add(photo);
-  return photo;
-}
 
-export async function deletePhoto(id: string): Promise<void> {
-  await db.photos.delete(id);
+  if (existing) {
+    await db.profiles.put(profile);
+  } else {
+    await db.profiles.add(profile);
+  }
+
+  return profile;
 }
 
 export async function upsertRecord(
@@ -58,7 +72,6 @@ export async function upsertRecord(
   data: {
     weightGrams?: number;
     memo?: string;
-    photoId?: string;
     parrotId?: string;
   },
 ): Promise<DailyRecord> {
@@ -70,7 +83,6 @@ export async function upsertRecord(
       ...existing,
       weightGrams: data.weightGrams,
       memo: data.memo,
-      photoId: data.photoId,
       parrotId: data.parrotId ?? existing.parrotId,
       updatedAt: now,
     };
@@ -83,7 +95,6 @@ export async function upsertRecord(
     date,
     weightGrams: data.weightGrams,
     memo: data.memo,
-    photoId: data.photoId,
     parrotId: data.parrotId,
     updatedAt: now,
   };
@@ -94,13 +105,5 @@ export async function upsertRecord(
 export async function deleteRecord(date: string): Promise<void> {
   const record = await getRecordByDate(date);
   if (!record) return;
-
-  if (record.photoId) {
-    await deletePhoto(record.photoId);
-  }
   await db.dailyRecords.delete(record.id);
-}
-
-export function createPhotoUrl(blob: Blob): string {
-  return URL.createObjectURL(blob);
 }

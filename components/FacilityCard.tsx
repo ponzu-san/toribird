@@ -1,4 +1,4 @@
-import { Facility } from "@/data/facilities";
+import type { Facility } from "@/types/catalog";
 import { sortJapanese } from "@/lib/utils/sortJa";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";

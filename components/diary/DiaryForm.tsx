@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import type { DailyRecord } from "@/types/diary";
 import { MAX_MEMO_LENGTH, useDiaryStore } from "@/lib/stores/diaryStore";
-import PhotoPicker from "./PhotoPicker";
 import Button from "@/components/ui/Button";
 
 const inputClass =
@@ -12,24 +11,19 @@ const inputClass =
 interface DiaryFormProps {
   date: string;
   record: DailyRecord | null;
-  photoUrl: string | null;
   onSaved?: () => void;
   onCancel?: () => void;
 }
 
-export default function DiaryForm({ date, record, photoUrl, onSaved, onCancel }: DiaryFormProps) {
+export default function DiaryForm({ date, record, onSaved, onCancel }: DiaryFormProps) {
   const { saveDiaryEntry, isSaving, error, saveMessage, clearSaveMessage } = useDiaryStore();
 
   const [weight, setWeight] = useState("");
   const [memo, setMemo] = useState("");
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [removePhoto, setRemovePhoto] = useState(false);
 
   useEffect(() => {
     setWeight(record?.weightGrams !== undefined ? String(record.weightGrams) : "");
     setMemo(record?.memo ?? "");
-    setPhotoFile(null);
-    setRemovePhoto(false);
     clearSaveMessage();
   }, [date, record, clearSaveMessage]);
 
@@ -41,8 +35,6 @@ export default function DiaryForm({ date, record, photoUrl, onSaved, onCancel }:
     const success = await saveDiaryEntry(date, {
       weightGrams,
       memo,
-      photoFile,
-      removePhoto,
     });
 
     if (success) {
@@ -86,15 +78,6 @@ export default function DiaryForm({ date, record, photoUrl, onSaved, onCancel }:
           {memo.length}/{MAX_MEMO_LENGTH}
         </p>
       </div>
-
-      <PhotoPicker
-        previewUrl={removePhoto ? null : photoUrl}
-        onPhotoChange={file => {
-          setPhotoFile(file);
-          if (file) setRemovePhoto(false);
-        }}
-        onRemovePhoto={() => setRemovePhoto(true)}
-      />
 
       {error && <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}
 

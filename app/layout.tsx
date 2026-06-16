@@ -1,6 +1,7 @@
 import { Noto_Sans_JP, Quicksand } from "next/font/google";
 import "./globals.scss";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -22,10 +23,11 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja" className={`${notoSansJP.variable} ${quicksand.variable}`}>
+    <html lang="ja" className={`${notoSansJP.variable} ${quicksand.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-surface text-foreground antialiased">
         <Navigation />
         {children}
+        <Footer />
       </body>
     </html>
   );

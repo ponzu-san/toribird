@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { ParrotDetail, getParrotImageUrl } from "@/data/parrots";
+import type { Parrot } from "@/types/catalog";
+import { getParrotImageUrl } from "@/lib/utils/parrotImage";
 
 interface ParrotModalProps {
-  parrot: ParrotDetail | null;
+  parrot: Parrot | null;
   onClose: () => void;
 }
 

@@ -5,11 +5,10 @@ import Button from "@/components/ui/Button";
 
 interface RecordSummaryProps {
   record: DailyRecord;
-  photoUrl: string | null;
   onEdit: () => void;
 }
 
-export default function RecordSummary({ record, photoUrl, onEdit }: RecordSummaryProps) {
+export default function RecordSummary({ record, onEdit }: RecordSummaryProps) {
   return (
     <div className="space-y-4">
       {record.weightGrams !== undefined && (
@@ -28,15 +27,6 @@ export default function RecordSummary({ record, photoUrl, onEdit }: RecordSummar
           <p className="whitespace-pre-wrap rounded-2xl border border-border bg-surface px-4 py-3 text-sm leading-relaxed text-foreground">
             {record.memo}
           </p>
-        </div>
-      )}
-
-      {photoUrl && (
-        <div>
-          <p className="mb-1.5 text-sm font-semibold text-muted">写真</p>
-          <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border border-border bg-surface">
-            <img src={photoUrl} alt="日記の写真" className="max-h-full max-w-full object-contain" />
-          </div>
         </div>
       )}
 

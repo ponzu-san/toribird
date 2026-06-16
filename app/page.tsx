@@ -19,7 +19,7 @@ export default function TodayPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  const { selectedDate, currentRecord, photoUrl, recordDates, isLoading, init, setSelectedDate, loadRecordForDate, loadRecordDates } = useDiaryStore();
+  const { selectedDate, currentRecord, recordDates, isLoading, init, setSelectedDate, loadRecordForDate, loadRecordDates } = useDiaryStore();
 
   const isToday = selectedDate === today;
 
@@ -32,7 +32,7 @@ export default function TodayPage() {
     setIsEditing(false);
   }, [selectedDate, loadRecordForDate]);
 
-  const hasRecord = currentRecord && (currentRecord.weightGrams !== undefined || currentRecord.memo || currentRecord.photoId);
+  const hasRecord = currentRecord && (currentRecord.weightGrams !== undefined || currentRecord.memo);
 
   const handlePrevDay = () => {
     setSelectedDate(addDays(selectedDate, -1));
@@ -80,14 +80,13 @@ export default function TodayPage() {
           </Card>
         ) : hasRecord && !isEditing ? (
           <Card>
-            <RecordSummary record={currentRecord!} photoUrl={photoUrl} onEdit={() => setIsEditing(true)} />
+            <RecordSummary record={currentRecord!} onEdit={() => setIsEditing(true)} />
           </Card>
         ) : (
           <Card>
             <DiaryForm
               date={selectedDate}
               record={currentRecord}
-              photoUrl={photoUrl}
               onSaved={() => {
                 setIsEditing(false);
                 loadRecordForDate(selectedDate);
