@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "description": "【一軍】AIがブラウザを自動で立ち上げて、クリックや画面遷移などのテストを実行",
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--headless"]
+    },
+
+    "chrome-devtools": {
+      "description": "【一軍】ブラウザのコンソールエラーやネットワーク状態をAIが直接監視して自己修正",
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--headless"]
+    },
+
+    "duckduckgo-search": {
+      "description": "【一軍・完全無料】APIキー不要でWeb検索ができるツール。Brave Searchの代わりとして最優秀",
+      "command": "uvx",
+      "args": ["duckduckgo-mcp-server"]
+    }
+  }
+}

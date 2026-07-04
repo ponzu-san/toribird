@@ -59,10 +59,9 @@ export default function ParrotModal({ parrot, onClose }: ParrotModalProps) {
           <img src={getParrotImageUrl(parrot.imageUrl)} alt={parrot.name} className="h-full w-full object-contain" />
         </div>
 
-        <div className="p-6 md:p-8">
+        <div className="p-3 md:p-4">
           <div className="mb-5">
-            <h2 className="mb-1 text-2xl font-bold text-foreground md:text-3xl">{parrot.name}</h2>
-            <p className="font-display text-sm text-muted">{parrot.englishName}</p>
+            <h2 className="text-2xl font-bold text-foreground md:text-3xl">{parrot.name}</h2>
           </div>
 
           <div className="mb-5 flex items-center gap-2 text-sm text-foreground">

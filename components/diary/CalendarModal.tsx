@@ -58,7 +58,7 @@ export default function CalendarModal({ isOpen, selectedDate, recordDates, onSel
         className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-border bg-surface-elevated shadow-pop-hover"
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
+        <div className="flex items-center justify-between border-b border-border px-3 py-3">
           <h2 className="text-lg font-bold text-foreground">日付を選ぶ</h2>
           <button
             onClick={onClose}
@@ -71,7 +71,7 @@ export default function CalendarModal({ isOpen, selectedDate, recordDates, onSel
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-3">
           <MonthCalendar
             variant="plain"
             monthKey={monthKey}

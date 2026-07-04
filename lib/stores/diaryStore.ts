@@ -1,7 +1,20 @@
 import { create } from "zustand";
 import type { DailyRecord, DiaryFormData, WeightPeriod } from "@/types/diary";
 import { PROFILE_DEFAULT_ID } from "@/types/profile";
-import { getProfile, getAllRecordDates, getAllWeightRecords, getRecordByDate, getRecordsInRange, upsertRecord } from "@/lib/db/diaryDb";
+import {
+  getAllRecordDates,
+  getAllWeightRecords,
+  getRecordByDate,
+  getRecordsInRange,
+  upsertRecord,
+} from "@/lib/db/diaryDb";
+import {
+  fetchRegisteredRecordAction,
+  fetchRegisteredRecordDatesAction,
+  fetchRegisteredRecordsAction,
+  saveRegisteredRecordAction,
+} from "@/lib/actions/healthRecords";
+import { useAccessStore } from "@/lib/stores/accessStore";
 import { getDaysAgoKey, getTodayKey } from "@/lib/utils/date";
 
 const MAX_MEMO_LENGTH = 500;
@@ -43,12 +56,21 @@ function validateFormData(data: DiaryFormData): string | null {
 
   const hasWeight = data.weightGrams !== undefined && data.weightGrams !== null && !Number.isNaN(data.weightGrams);
   const hasMemo = !!data.memo?.trim();
+  const hasMood = !!data.mood;
 
-  if (!hasWeight && !hasMemo) {
-    return "体重・メモのいずれかを入力してください";
+  if (!hasWeight && !hasMemo && !hasMood) {
+    return "体重・調子・メモのいずれかを入力してください";
   }
 
   return null;
+}
+
+function isRegisteredMode(): boolean {
+  return useAccessStore.getState().mode === "registered";
+}
+
+function isReadOnlyMode(): boolean {
+  return useAccessStore.getState().isReadOnly;
 }
 
 export const useDiaryStore = create<DiaryState>((set, get) => ({
@@ -70,7 +92,14 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const record = await getRecordByDate(date);
+      let record: DailyRecord | null | undefined;
+
+      if (isRegisteredMode()) {
+        record = await fetchRegisteredRecordAction(date);
+      } else {
+        record = await getRecordByDate(date);
+      }
+
       set({ currentRecord: record ?? null, isLoading: false });
     } catch {
       set({ error: "記録の読み込みに失敗しました", isLoading: false });
@@ -79,7 +108,7 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
 
   loadRecordDates: async () => {
     try {
-      const dates = await getAllRecordDates();
+      const dates = isRegisteredMode() ? await fetchRegisteredRecordDatesAction() : await getAllRecordDates();
       set({ recordDates: dates });
     } catch {
       set({ error: "記録日の読み込みに失敗しました" });
@@ -96,7 +125,12 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
     try {
       let records: DailyRecord[];
 
-      if (selectedPeriod === "all") {
+      if (isRegisteredMode()) {
+        records = await fetchRegisteredRecordsAction(selectedPeriod);
+        if (selectedPeriod !== "all") {
+          records = records.filter(r => r.weightGrams !== undefined);
+        }
+      } else if (selectedPeriod === "all") {
         records = await getAllWeightRecords();
       } else {
         const fromDate = getDaysAgoKey(selectedPeriod);
@@ -111,6 +145,11 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   },
 
   saveDiaryEntry: async (date, data) => {
+    if (isReadOnlyMode()) {
+      set({ error: "体験期間が終了しました。登録すると記録を続けられます", saveMessage: null });
+      return false;
+    }
+
     const validationError = validateFormData(data);
     if (validationError) {
       set({ error: validationError, saveMessage: null });
@@ -123,14 +162,20 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
       const hasWeight = data.weightGrams !== undefined && data.weightGrams !== null && !Number.isNaN(data.weightGrams);
       const hasMemo = data.memo !== undefined && data.memo.trim() !== "";
 
-      const profile = await getProfile(PROFILE_DEFAULT_ID);
-      const parrotId = profile ? PROFILE_DEFAULT_ID : undefined;
-
-      await upsertRecord(date, {
-        weightGrams: hasWeight ? data.weightGrams : undefined,
-        memo: hasMemo ? data.memo!.trim() : undefined,
-        parrotId,
-      });
+      if (isRegisteredMode()) {
+        await saveRegisteredRecordAction(date, {
+          weightGrams: hasWeight ? data.weightGrams : undefined,
+          mood: data.mood,
+          memo: hasMemo ? data.memo!.trim() : undefined,
+        });
+      } else {
+        await upsertRecord(date, {
+          weightGrams: hasWeight ? data.weightGrams : undefined,
+          mood: data.mood,
+          memo: hasMemo ? data.memo!.trim() : undefined,
+          parrotId: PROFILE_DEFAULT_ID,
+        });
+      }
 
       await get().loadRecordForDate(date);
       await get().loadRecordDates();
@@ -148,6 +193,8 @@ export const useDiaryStore = create<DiaryState>((set, get) => ({
   clearSaveMessage: () => set({ saveMessage: null, error: null }),
 
   init: async () => {
+    await useAccessStore.getState().init();
+
     const { selectedDate } = get();
     const date = selectedDate || getTodayKey();
     if (!selectedDate) {

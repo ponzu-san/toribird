@@ -5,7 +5,6 @@ export interface Facility {
   name: string;
   prefecture: string;
   address: string;
-  category: string;
   website: string;
   parrots: string[];
 }
@@ -16,7 +15,6 @@ export const facilities: Facility[] = [
     name: "上野動物園",
     prefecture: "東京都",
     address: "東京都台東区上野公園9-83",
-    category: "動物園",
     website: "https://www.tokyo-zoo.net/ueno/",
     parrots: [],
   },
@@ -25,7 +23,6 @@ export const facilities: Facility[] = [
     name: "多摩動物公園",
     prefecture: "東京都",
     address: "東京都日野市程久保7-1-1",
-    category: "動物園",
     website: "https://www.tokyo-zoo.net/tama/",
     parrots: ["ルリコンゴウインコ", "ベニコンゴウインコ"],
   },
@@ -34,7 +31,6 @@ export const facilities: Facility[] = [
     name: "井の頭自然文化園",
     prefecture: "東京都",
     address: "東京都武蔵野市御殿山1-17-6",
-    category: "動物園",
     website: "https://www.tokyo-zoo.net/inokashira/",
     parrots: [],
   },
@@ -43,7 +39,6 @@ export const facilities: Facility[] = [
     name: "板橋こども動物園",
     prefecture: "東京都",
     address: "東京都板橋区板橋3-50-1",
-    category: "動物園",
     website: "https://itabashi-park-zoo.com/",
     parrots: [],
   },
@@ -52,7 +47,6 @@ export const facilities: Facility[] = [
     name: "こども動物園 高島平分園",
     prefecture: "東京都",
     address: "東京都板橋区高島平8-24-1",
-    category: "動物園",
     website: "https://itabashi-park-zoo.com/bunen/",
     parrots: ["セキセイインコ"],
   },
@@ -61,7 +55,6 @@ export const facilities: Facility[] = [
     name: "羽村市動物公園",
     prefecture: "東京都",
     address: "東京都羽村市羽4122番地",
-    category: "動物園",
     website: "https://hamurazoo.jp/",
     parrots: ["ベニコンゴウインコ", "ミドリコンゴウインコ", "ルリゴシボタンインコ"],
   },
@@ -70,7 +63,6 @@ export const facilities: Facility[] = [
     name: "江戸川区自然動物園",
     prefecture: "東京都",
     address: "東京都江戸川区北葛西3-2-1",
-    category: "動物園",
     website: "https://www.edogawa-kankyozaidan.jp/zoo/",
     parrots: [],
   },
@@ -79,7 +71,6 @@ export const facilities: Facility[] = [
     name: "鳥のあるカフェ 谷中本店",
     prefecture: "東京都",
     address: "東京都台東区谷中2-3-16-1F",
-    category: "鳥カフェ",
     website: "https://toricafe.co.jp/yanaka",
     parrots: [
       "シロハラインコ",
@@ -96,7 +87,6 @@ export const facilities: Facility[] = [
     name: "鳥のあるカフェ 千駄木店",
     prefecture: "東京都",
     address: "東京都文京区千駄木3-42-16-1F",
-    category: "鳥カフェ",
     website: "https://toricafe.co.jp/sendagi",
     parrots: [
       "タイハクオウム",
@@ -114,7 +104,6 @@ export const facilities: Facility[] = [
     name: "ことりカフェ上野本店",
     prefecture: "東京都",
     address: "東京都台東区上野桜木1-8-6",
-    category: "鳥カフェ",
     website: "http://ueno.kotoricafe.jp/",
     parrots: ["タイハクオウム", "サザナミインコ", "オカメインコ", "コザクラインコ", "セキセイインコ", "桜文鳥", "白文鳥"],
   },
@@ -123,7 +112,6 @@ export const facilities: Facility[] = [
     name: "野毛山動物園",
     prefecture: "神奈川県",
     address: "横浜市西区老松町63-10",
-    category: "動物園",
     website: "https://www.hama-midorinokyokai.or.jp/zoo/nogeyama/",
     parrots: ["ボタンインコ"],
   },
@@ -132,7 +120,6 @@ export const facilities: Facility[] = [
     name: "ズーラシア",
     prefecture: "神奈川県",
     address: "横浜市旭区上白根町1175-1",
-    category: "動物園",
     website: "https://www.hama-midorinokyokai.or.jp/zoo/zoorasia/",
     parrots: ["ハネナガインコ", "ベニコンゴウインコ", "ルリコンゴウインコ", "モモイロインコ", "ヨウム"],
   },
@@ -141,7 +128,6 @@ export const facilities: Facility[] = [
     name: "金沢動物園",
     prefecture: "神奈川県",
     address: "横浜市金沢区釜利谷東5-15-1",
-    category: "動物園",
     website: "https://www.hama-midorinokyokai.or.jp/zoo/kanazawa/",
     parrots: [],
   },

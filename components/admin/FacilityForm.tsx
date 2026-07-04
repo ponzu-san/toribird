@@ -34,33 +34,18 @@ export default function FacilityForm({ facility, parrotOptions }: FacilityFormPr
         <input id="name" name="name" defaultValue={facility?.name ?? ""} required className={adminInputClass} />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="prefecture" className={adminLabelClass}>
-            都道府県
-          </label>
-          <input id="prefecture" name="prefecture" defaultValue={facility?.prefecture ?? ""} required className={adminInputClass} />
-        </div>
-        <div>
-          <label htmlFor="category" className={adminLabelClass}>
-            カテゴリ
-          </label>
-          <input
-            id="category"
-            name="category"
-            defaultValue={facility?.category ?? ""}
-            placeholder="例: 動物園、鳥カフェ"
-            required
-            className={adminInputClass}
-          />
-        </div>
+      <div>
+        <label htmlFor="prefecture" className={adminLabelClass}>
+          都道府県
+        </label>
+        <input id="prefecture" name="prefecture" defaultValue={facility?.prefecture ?? ""} required className={adminInputClass} />
       </div>
 
       <div>
         <label htmlFor="address" className={adminLabelClass}>
           住所
         </label>
-        <input id="address" name="address" defaultValue={facility?.address ?? ""} required className={adminInputClass} />
+        <input id="address" name="address" defaultValue={facility?.address ?? ""} className={adminInputClass} />
       </div>
 
       <div>
@@ -85,7 +70,7 @@ export default function FacilityForm({ facility, parrotOptions }: FacilityFormPr
 
       <div>
         <p className={adminLabelClass}>見られるインコ</p>
-        <div className="max-h-56 space-y-2 overflow-y-auto rounded-2xl border border-border bg-surface-elevated p-4">
+        <div className="max-h-56 space-y-2 overflow-y-auto rounded-2xl border border-border bg-surface-elevated p-3">
           {parrotOptions.length === 0 ? (
             <p className="text-sm text-muted">先に図鑑へ鳥種を登録してください</p>
           ) : (

@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { getAdminFacilities, getAdminParrots } from "@/lib/db/adminCatalogDb";
+import { getPendingSubmissionCount } from "@/lib/db/adminSubmissionsDb";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const [parrots, facilities] = await Promise.all([getAdminParrots(), getAdminFacilities()]);
+  const [parrots, facilities, pendingSubmissions] = await Promise.all([
+    getAdminParrots(),
+    getAdminFacilities(),
+    getPendingSubmissionCount(),
+  ]);
 
   const publishedParrots = parrots.filter(parrot => parrot.status === "published").length;
   const publishedFacilities = facilities.filter(facility => facility.status === "published").length;
@@ -18,7 +23,16 @@ export default async function AdminDashboardPage() {
         <p className="mt-2 text-sm text-muted">施設と図鑑のコンテンツを管理できます</p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <p className="text-sm font-semibold text-muted">承認待ち投稿</p>
+          <p className="mt-2 text-3xl font-bold text-foreground">{pendingSubmissions}</p>
+          <p className="mt-1 text-sm text-muted">ユーザーからの投稿</p>
+          <Link href="/admin/submissions?status=pending" className="mt-4 inline-block">
+            <Button variant="secondary">投稿を確認</Button>
+          </Link>
+        </Card>
+
         <Card>
           <p className="text-sm font-semibold text-muted">図鑑（鳥種）</p>
           <p className="mt-2 text-3xl font-bold text-foreground">{parrots.length}</p>

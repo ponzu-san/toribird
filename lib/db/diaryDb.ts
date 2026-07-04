@@ -17,6 +17,10 @@ class DiaryDatabase extends Dexie {
       dailyRecords: "id, &date, parrotId, updatedAt",
       profiles: "id, updatedAt",
     });
+    this.version(3).stores({
+      dailyRecords: "id, &date, parrotId, updatedAt",
+      profiles: "id, updatedAt",
+    });
   }
 }
 
@@ -54,6 +58,10 @@ export async function upsertProfile(data: Omit<ParrotProfile, "id" | "updatedAt"
     name: data.name,
     speciesId: data.speciesId,
     speciesCustom: data.speciesCustom,
+    sex: data.sex,
+    birthday: data.birthday,
+    adoptedOn: data.adoptedOn,
+    photoUrl: data.photoUrl,
     bio: data.bio,
     updatedAt: now,
   };
@@ -71,6 +79,7 @@ export async function upsertRecord(
   date: string,
   data: {
     weightGrams?: number;
+    mood?: DailyRecord["mood"];
     memo?: string;
     parrotId?: string;
   },
@@ -82,6 +91,7 @@ export async function upsertRecord(
     const updated: DailyRecord = {
       ...existing,
       weightGrams: data.weightGrams,
+      mood: data.mood,
       memo: data.memo,
       parrotId: data.parrotId ?? existing.parrotId,
       updatedAt: now,
@@ -94,6 +104,7 @@ export async function upsertRecord(
     id: crypto.randomUUID(),
     date,
     weightGrams: data.weightGrams,
+    mood: data.mood,
     memo: data.memo,
     parrotId: data.parrotId,
     updatedAt: now,

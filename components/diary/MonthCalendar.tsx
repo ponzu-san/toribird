@@ -44,7 +44,7 @@ export default function MonthCalendar({
       className={
         variant === "plain"
           ? "p-0"
-          : "rounded-2xl border border-border bg-surface-elevated p-4 shadow-pop lg:p-5"
+          : "rounded-2xl border border-border bg-surface-elevated p-3 shadow-pop"
       }
     >
       <div className="mb-4 flex items-center justify-between">

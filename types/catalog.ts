@@ -1,7 +1,6 @@
 export type Parrot = {
   id: string;
   name: string;
-  englishName: string;
   habitat: string;
   description: string;
   imageUrl: string;
@@ -12,7 +11,6 @@ export type Facility = {
   name: string;
   prefecture: string;
   address: string;
-  category: string;
   website: string;
   parrots: string[];
 };
@@ -35,7 +33,6 @@ export type AdminFacility = {
   name: string;
   prefecture: string;
   address: string;
-  category: string;
   website: string;
   status: CatalogStatus;
   parrotIds: string[];

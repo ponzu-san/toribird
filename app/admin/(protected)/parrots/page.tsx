@@ -31,7 +31,7 @@ export default async function AdminParrotsPage() {
           <thead className="border-b border-border bg-sky-soft/40 text-muted">
             <tr>
               <th className="px-4 py-3 font-semibold">名前</th>
-              <th className="px-4 py-3 font-semibold">英語名</th>
+              <th className="px-4 py-3 font-semibold">生息地</th>
               <th className="px-4 py-3 font-semibold">状態</th>
               <th className="px-4 py-3 font-semibold">操作</th>
             </tr>
@@ -40,7 +40,7 @@ export default async function AdminParrotsPage() {
             {parrots.map(parrot => (
               <tr key={parrot.id} className="border-b border-border last:border-b-0">
                 <td className="px-4 py-3 font-medium text-foreground">{parrot.name}</td>
-                <td className="px-4 py-3 text-muted">{parrot.englishName}</td>
+                <td className="px-4 py-3 text-muted">{parrot.habitat}</td>
                 <td className="px-4 py-3 text-muted">{statusLabels[parrot.status]}</td>
                 <td className="px-4 py-3">
                   <Link href={`/admin/parrots/${parrot.id}/edit`} className="font-semibold text-primary underline">

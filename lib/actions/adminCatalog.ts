@@ -10,6 +10,9 @@ export type ActionResult = {
   error?: string;
 };
 
+const PLACEHOLDER_HABITAT = "（未登録）";
+const PLACEHOLDER_DESCRIPTION = "（未登録）";
+
 async function getAuthedClient() {
   await requireAdminSession();
   const supabase = await createSupabaseServerClient();
@@ -32,15 +35,14 @@ export async function saveParrotAction(_prev: ActionResult, formData: FormData):
     const id = String(formData.get("id") ?? "");
     const payload = {
       name: String(formData.get("name") ?? "").trim(),
-      english_name: String(formData.get("englishName") ?? "").trim(),
-      habitat: String(formData.get("habitat") ?? "").trim(),
-      description: String(formData.get("description") ?? "").trim(),
+      habitat: String(formData.get("habitat") ?? "").trim() || PLACEHOLDER_HABITAT,
+      description: String(formData.get("description") ?? "").trim() || PLACEHOLDER_DESCRIPTION,
       image_url: String(formData.get("imageUrl") ?? "").trim() || null,
       status: String(formData.get("status") ?? "published") as CatalogStatus,
     };
 
-    if (!payload.name || !payload.english_name || !payload.habitat || !payload.description) {
-      return { error: "必須項目を入力してください" };
+    if (!payload.name) {
+      return { error: "名前を入力してください" };
     }
 
     if (id) {
@@ -90,17 +92,17 @@ export async function saveFacilityAction(_prev: ActionResult, formData: FormData
     const supabase = await getAuthedClient();
     const id = String(formData.get("id") ?? "");
     const parrotIds = formData.getAll("parrotIds").map(String);
+    const address = String(formData.get("address") ?? "").trim();
     const payload = {
       name: String(formData.get("name") ?? "").trim(),
       prefecture: String(formData.get("prefecture") ?? "").trim(),
-      address: String(formData.get("address") ?? "").trim(),
-      category: String(formData.get("category") ?? "").trim(),
+      address: address || null,
       website: String(formData.get("website") ?? "").trim() || null,
       status: String(formData.get("status") ?? "published") as CatalogStatus,
     };
 
-    if (!payload.name || !payload.prefecture || !payload.address || !payload.category) {
-      return { error: "必須項目を入力してください" };
+    if (!payload.name || !payload.prefecture) {
+      return { error: "施設名と都道府県を入力してください" };
     }
 
     let facilityId = id;

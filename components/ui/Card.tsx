@@ -8,9 +8,9 @@ interface CardProps {
 }
 
 const paddingMap = {
-  sm: "p-4",
-  md: "p-5",
-  lg: "p-6",
+  sm: "p-3",
+  md: "p-3",
+  lg: "p-4",
 };
 
 export default function Card({ children, className = "", padding = "md", hover = false }: CardProps) {

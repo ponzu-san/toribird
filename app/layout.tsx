@@ -2,6 +2,9 @@ import { Noto_Sans_JP, Quicksand } from "next/font/google";
 import "./globals.scss";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import HealthProvider from "@/components/health/HealthProvider";
+import DevToolsGate from "@/components/dev/DevToolsGate";
+import { getHealthContext } from "@/lib/actions/healthContext";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -17,17 +20,23 @@ const quicksand = Quicksand({
 });
 
 export const metadata = {
-  title: "Toribird - インコの飼育日記",
-  description: "インコの体重・体調・写真を毎日記録できる飼育日記アプリ。施設検索やインコ図鑑も利用できます。",
+  title: "Toribird - インコの健康管理",
+  description: "インコの体重・体調を毎日30秒で記録。異変に早く気づける健康管理アプリ。",
+  manifest: "/manifest.json",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const initialAccess = await getHealthContext();
+
   return (
     <html lang="ja" className={`${notoSansJP.variable} ${quicksand.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-surface text-foreground antialiased">
-        <Navigation />
-        {children}
-        <Footer />
+        <HealthProvider initialAccess={initialAccess}>
+          <Navigation />
+          {children}
+          <Footer />
+          <DevToolsGate />
+        </HealthProvider>
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Facility, Parrot } from "@/types/catalog";
 import FacilityCard from "@/components/FacilityCard";
@@ -51,6 +52,14 @@ export default function FacilitiesClient({ facilities, parrots, prefectures, par
         <p className="text-sm font-bold text-primary">施設検索</p>
         <h1 className="mt-1 text-2xl font-bold text-foreground md:text-3xl">インコが見られる施設</h1>
         <p className="mt-2 text-muted">日本全国のインコ・オウムに会える動物園や鳥カフェを探そう</p>
+        <div className="mt-4">
+          <Link
+            href="/submit/facility"
+            className="inline-flex items-center rounded-2xl border border-border bg-surface-elevated px-4 py-2 text-sm font-semibold text-foreground shadow-pop transition hover:border-primary hover:text-primary"
+          >
+            施設情報を投稿する
+          </Link>
+        </div>
       </header>
 
       <div className="grid gap-8 lg:grid-cols-[320px,1fr]">

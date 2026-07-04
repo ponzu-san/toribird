@@ -1,18 +1,26 @@
 "use client";
 
 import type { DailyRecord } from "@/types/diary";
+import { getMoodLabel } from "@/types/health";
 import Button from "@/components/ui/Button";
 
 interface RecordSummaryProps {
   record: DailyRecord;
-  onEdit: () => void;
+  onEdit?: () => void;
 }
 
 export default function RecordSummary({ record, onEdit }: RecordSummaryProps) {
   return (
     <div className="space-y-4">
+      {record.mood && (
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-surface px-4 py-3">
+          <span className="text-sm font-bold text-primary">調子</span>
+          <p className="text-base font-semibold text-foreground">{getMoodLabel(record.mood)}</p>
+        </div>
+      )}
+
       {record.weightGrams !== undefined && (
-        <div className="flex items-baseline gap-2 rounded-2xl border border-border bg-sky-soft p-4">
+        <div className="flex items-baseline gap-2 rounded-2xl border border-border bg-sky-soft p-3">
           <span className="shrink-0 text-sm font-bold text-primary">体重</span>
           <p className="font-display text-2xl font-bold text-primary sm:text-3xl">
             {record.weightGrams}
@@ -30,9 +38,11 @@ export default function RecordSummary({ record, onEdit }: RecordSummaryProps) {
         </div>
       )}
 
-      <Button variant="secondary" fullWidth onClick={onEdit}>
-        編集する
-      </Button>
+      {onEdit && (
+        <Button variant="secondary" fullWidth onClick={onEdit}>
+          編集する
+        </Button>
+      )}
     </div>
   );
 }

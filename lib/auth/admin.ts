@@ -13,7 +13,7 @@ export async function getAdminSession(): Promise<AdminSession | null> {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
 
   if (!user?.email) {
     return null;

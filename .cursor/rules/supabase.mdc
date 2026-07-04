@@ -1,0 +1,19 @@
+---
+description: Supabase・マイグレーション・RLS
+globs: supabase/**/*,lib/db/**/*,lib/supabase/**/*,lib/auth/**/*
+alwaysApply: false
+---
+
+# Supabase
+
+- マイグレーションは `supabase/migrations/` に番号付き SQL で追加
+- 実行順: `001_catalog.sql` → `002_admin_rls.sql` → `003_submissions.sql` → `004_remove_english_name_category.sql`
+- RLS を前提。管理者操作は `is_admin()` + `requireAdminSession()`
+- クライアント生成は `lib/supabase/server.ts` / `client.ts` / `anon.ts` を使い分ける
+
+## 投稿審査フロー
+
+- `pending`: 編集・承認・却下が可能
+- `rejected`: 承認待ちに復帰可能
+- `approved`: カタログ側（`/admin/parrots`, `/admin/facilities`）で管理。`pending` への復帰はしない
+- 承認時は重複名チェック（同名があれば自動却下）

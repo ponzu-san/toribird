@@ -8,6 +8,7 @@ type AdminNavProps = {
 
 const links = [
   { href: "/admin", label: "ダッシュボード" },
+  { href: "/admin/submissions", label: "投稿" },
   { href: "/admin/parrots", label: "図鑑" },
   { href: "/admin/facilities", label: "施設" },
 ];

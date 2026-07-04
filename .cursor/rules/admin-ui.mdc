@@ -1,0 +1,23 @@
+---
+description: 管理画面・ユーザー投稿の実装ルール
+globs: app/admin/**/*,app/submit/**/*,components/admin/**/*
+alwaysApply: false
+---
+
+# 管理画面
+
+- ルート: `/admin`（要ログイン）、`/admin/login`
+- 機能: 図鑑 CRUD、施設 CRUD、投稿審査（一覧・編集・承認・却下・再審査）
+- 削除は `DeleteButton` の確認モーダル経由
+- ナビは `AdminNav` に集約
+- 入力スタイルは `components/admin/adminFormStyles.ts` を再利用
+
+## ユーザー投稿
+
+- 公開フォーム: `/submit`, `/submit/parrot`, `/submit/facility`
+- 審査 UI: `SubmissionsList`（展開詳細）、`SubmissionEditForm`、`SubmissionReviewActions`、`SubmissionReopenActions`
+- Server Actions: `lib/actions/adminSubmissions.ts`
+
+## 法令
+
+- `/privacy` にプライバシーポリシーあり。機能追加に応じて更新

@@ -31,6 +31,8 @@ export default function ProfileForm({ profile, onSaved, onCancel }: ProfileFormP
   const [name, setName] = useState("");
   const [speciesId, setSpeciesId] = useState("");
   const [speciesCustom, setSpeciesCustom] = useState("");
+  const [sex, setSex] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [bio, setBio] = useState("");
   const [parrotNames, setParrotNames] = useState<string[]>([]);
 
@@ -48,6 +50,8 @@ export default function ProfileForm({ profile, onSaved, onCancel }: ProfileFormP
     setName(profile?.name ?? "");
     setSpeciesId(profile?.speciesId ?? "");
     setSpeciesCustom(profile?.speciesCustom ?? "");
+    setSex(profile?.sex ?? "");
+    setBirthday(profile?.birthday ?? "");
     setBio(profile?.bio ?? "");
     clearSaveMessage();
   }, [profile, clearSaveMessage]);
@@ -59,6 +63,8 @@ export default function ProfileForm({ profile, onSaved, onCancel }: ProfileFormP
       name,
       speciesId,
       speciesCustom: speciesId === SPECIES_OTHER_ID ? speciesCustom : undefined,
+      sex: sex === "" ? undefined : (sex as "male" | "female" | "unknown"),
+      birthday: birthday || undefined,
       bio,
     });
 
@@ -115,6 +121,31 @@ export default function ProfileForm({ profile, onSaved, onCancel }: ProfileFormP
           />
         </div>
       )}
+
+      <div>
+        <label htmlFor="profile-sex" className="mb-2 block text-sm font-semibold text-muted">
+          性別（任意）
+        </label>
+        <select id="profile-sex" value={sex} onChange={e => setSex(e.target.value)} className={selectClass}>
+          <option value="">未設定</option>
+          <option value="male">オス</option>
+          <option value="female">メス</option>
+          <option value="unknown">不明</option>
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="profile-birthday" className="mb-2 block text-sm font-semibold text-muted">
+          誕生日（任意）
+        </label>
+        <input
+          id="profile-birthday"
+          type="date"
+          value={birthday}
+          onChange={e => setBirthday(e.target.value)}
+          className={inputClass}
+        />
+      </div>
 
       <div>
         <label htmlFor="profile-bio" className="mb-2 block text-sm font-semibold text-muted">

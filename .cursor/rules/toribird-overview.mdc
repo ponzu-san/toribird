@@ -1,0 +1,36 @@
+---
+description: toribird の概要・技術スタック・データ所在・ディレクトリ構成
+alwaysApply: true
+---
+
+# toribird 概要
+
+インコ飼育者向け Web アプリ。体重・体調の記録（飼育日記）、うちの子プロフィール、インコ図鑑、施設検索がコア機能。
+
+- 差別化: [とりっち](https://torich.jp/) のような掲示板ではなく、健康管理と「うちの子自慢」に特化
+- ターゲット: 日本在住のインコ飼育者（PC・スマートフォン）
+- UI・ユーザー向け文言は日本語
+
+## 技術スタック
+
+Next.js 16（App Router）、React 19、TypeScript、Tailwind CSS v4、Sass（`app/globals.scss`）、Zustand、Dexie、Supabase、Vercel。
+
+開発サーバーは `npm run dev` で **http://localhost:3100**（ポート 3000 との競合回避）。
+
+環境変数は `.env.example` を参照。`SUPABASE_SERVICE_ROLE_KEY` は `npm run seed:catalog` 専用。
+
+## データの所在
+
+| データ | 保存先 |
+|--------|--------|
+| 図鑑・施設 | Supabase |
+| ユーザー投稿 | Supabase `submissions` |
+| 日記・プロフィール | Dexie（ローカル、クラウド同期未実装） |
+
+Supabase 未設定時は `data/*.ts` をフォールバックし `CatalogSetupNotice` を表示。
+
+## ディレクトリ
+
+- `app/` ページ、`components/ui|admin|diary/`、`lib/actions|db|auth|supabase|stores|utils/`
+- `types/` 型定義、`supabase/migrations/` SQL（001→002→003 の順）
+- パスエイリアス `@/`

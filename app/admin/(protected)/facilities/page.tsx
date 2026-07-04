@@ -32,7 +32,6 @@ export default async function AdminFacilitiesPage() {
             <tr>
               <th className="px-4 py-3 font-semibold">施設名</th>
               <th className="px-4 py-3 font-semibold">都道府県</th>
-              <th className="px-4 py-3 font-semibold">カテゴリ</th>
               <th className="px-4 py-3 font-semibold">状態</th>
               <th className="px-4 py-3 font-semibold">操作</th>
             </tr>
@@ -42,7 +41,6 @@ export default async function AdminFacilitiesPage() {
               <tr key={facility.id} className="border-b border-border last:border-b-0">
                 <td className="px-4 py-3 font-medium text-foreground">{facility.name}</td>
                 <td className="px-4 py-3 text-muted">{facility.prefecture}</td>
-                <td className="px-4 py-3 text-muted">{facility.category}</td>
                 <td className="px-4 py-3 text-muted">{statusLabels[facility.status]}</td>
                 <td className="px-4 py-3">
                   <Link href={`/admin/facilities/${facility.id}/edit`} className="font-semibold text-primary underline">

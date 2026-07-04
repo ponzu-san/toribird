@@ -9,7 +9,6 @@ import type { CatalogFilters, CatalogSource, Facility, Parrot } from "@/types/ca
 type ParrotRow = {
   id: string;
   name: string;
-  english_name: string;
   habitat: string;
   description: string;
   image_url: string | null;
@@ -23,8 +22,7 @@ type FacilityRow = {
   id: string;
   name: string;
   prefecture: string;
-  address: string;
-  category: string;
+  address: string | null;
   website: string | null;
   facility_parrots: FacilityParrotLink[] | null;
 };
@@ -33,7 +31,6 @@ function mapParrot(row: ParrotRow): Parrot {
   return {
     id: row.id,
     name: row.name,
-    englishName: row.english_name,
     habitat: row.habitat,
     description: row.description,
     imageUrl: row.image_url ?? "",
@@ -53,8 +50,7 @@ function mapFacility(row: FacilityRow): Facility {
     id: row.id,
     name: row.name,
     prefecture: row.prefecture,
-    address: row.address,
-    category: row.category,
+    address: row.address ?? "",
     website: row.website ?? "",
     parrots,
   };
@@ -64,7 +60,6 @@ function getStaticParrots(): Parrot[] {
   return Object.values(staticParrotDetails).map((parrot, index) => ({
     id: `static-${index}`,
     name: parrot.name,
-    englishName: parrot.englishName,
     habitat: parrot.habitat,
     description: parrot.description,
     imageUrl: parrot.imageUrl,
@@ -82,7 +77,7 @@ function getStaticFacilities(filters?: CatalogFilters): Facility[] {
 async function fetchPublishedParrots(supabase: SupabaseClient): Promise<Parrot[]> {
   const { data, error } = await supabase
     .from("parrots")
-    .select("id, name, english_name, habitat, description, image_url")
+    .select("id, name, habitat, description, image_url")
     .eq("status", "published")
     .order("name");
 
@@ -101,7 +96,6 @@ async function fetchPublishedFacilities(supabase: SupabaseClient, filters?: Cata
       name,
       prefecture,
       address,
-      category,
       website,
       facility_parrots (
         parrots ( name )

@@ -1,7 +1,6 @@
 import type { Facility } from "@/types/catalog";
 import { sortJapanese } from "@/lib/utils/sortJa";
 import Card from "@/components/ui/Card";
-import Badge from "@/components/ui/Badge";
 
 interface FacilityCardProps {
   facility: Facility;
@@ -11,15 +10,12 @@ interface FacilityCardProps {
 export default function FacilityCard({ facility, onParrotClick }: FacilityCardProps) {
   return (
     <Card hover>
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-xl font-bold text-foreground">{facility.name}</h3>
-          <p className="mt-1 text-sm text-muted">{facility.prefecture}</p>
-        </div>
-        <Badge variant="category">{facility.category}</Badge>
+      <div className="mb-4">
+        <h3 className="text-xl font-bold text-foreground">{facility.name}</h3>
+        <p className="mt-1 text-sm text-muted">{facility.prefecture}</p>
       </div>
 
-      <p className="mb-5 text-sm leading-relaxed text-foreground">{facility.address}</p>
+      {facility.address && <p className="mb-5 text-sm leading-relaxed text-foreground">{facility.address}</p>}
 
       {facility.parrots.length > 0 && (
         <div className="mb-5">
@@ -38,17 +34,19 @@ export default function FacilityCard({ facility, onParrotClick }: FacilityCardPr
         </div>
       )}
 
-      <a
-        href={facility.website}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center text-sm font-bold text-primary transition hover:text-primary-dark"
-      >
-        公式サイト
-        <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-        </svg>
-      </a>
+      {facility.website && (
+        <a
+          href={facility.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center text-sm font-bold text-primary transition hover:text-primary-dark"
+        >
+          公式サイト
+          <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      )}
     </Card>
   );
 }

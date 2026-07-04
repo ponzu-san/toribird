@@ -15,7 +15,7 @@ interface WeightChartProps {
 const PERIOD_LABELS: Record<WeightPeriod, string> = {
   7: "直近1週間",
   30: "直近1ヶ月",
-  365: "直近1年",
+  90: "直近3ヶ月",
   all: "全期間",
 };
 
@@ -56,7 +56,7 @@ export default function WeightChart({ records, period, size = "compact" }: Weigh
   const heightClass = size === "full" ? "h-64 lg:h-72" : "h-48";
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-elevated p-5 shadow-pop">
+    <div className="rounded-2xl border border-border bg-surface-elevated p-3 shadow-pop">
       <h3 className="mb-3 text-sm font-bold text-foreground">体重の推移（{PERIOD_LABELS[period]}）</h3>
       <div className={`w-full ${heightClass}`}>
         <ResponsiveContainer width="100%" height="100%">
@@ -91,7 +91,7 @@ export default function WeightChart({ records, period, size = "compact" }: Weigh
               }}
             />
             <Line
-              type="monotone"
+              type="linear"
               dataKey="weight"
               stroke={CHART_PRIMARY}
               strokeWidth={2.5}

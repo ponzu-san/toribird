@@ -27,23 +27,16 @@ export default function ParrotForm({ parrot }: ParrotFormProps) {
 
       <div>
         <label htmlFor="name" className={adminLabelClass}>
-          名前（日本語）
+          名前
         </label>
         <input id="name" name="name" defaultValue={parrot?.name ?? ""} required className={adminInputClass} />
-      </div>
-
-      <div>
-        <label htmlFor="englishName" className={adminLabelClass}>
-          英語名
-        </label>
-        <input id="englishName" name="englishName" defaultValue={parrot?.englishName ?? ""} required className={adminInputClass} />
       </div>
 
       <div>
         <label htmlFor="habitat" className={adminLabelClass}>
           生息地
         </label>
-        <input id="habitat" name="habitat" defaultValue={parrot?.habitat ?? ""} required className={adminInputClass} />
+        <input id="habitat" name="habitat" defaultValue={parrot?.habitat ?? ""} placeholder="未入力の場合は「（未登録）」" className={adminInputClass} />
       </div>
 
       <div>
@@ -75,7 +68,7 @@ export default function ParrotForm({ parrot }: ParrotFormProps) {
           name="description"
           rows={6}
           defaultValue={parrot?.description ?? ""}
-          required
+          placeholder="未入力の場合は「（未登録）」"
           className={`resize-y ${adminInputClass}`}
         />
       </div>

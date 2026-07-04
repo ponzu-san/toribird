@@ -1,0 +1,27 @@
+---
+description: デザイン・スタイルガイド
+globs: **/*.{tsx,scss}
+alwaysApply: false
+---
+
+# デザイン方針
+
+- **モバイルファースト**。`PageShell` の width バリアントを活用
+- カードベース UI、カード内 padding は 12px（`p-3`）、角丸大きめ（`rounded-2xl`, `rounded-3xl`）
+- 管理画面（`/admin`）はフッター非表示
+
+## カラー（`app/globals.scss`）
+
+- プライマリ: `#1785e4`（`primary`）
+- アクセント: `#34675c`（`pine`）
+- 背景: `surface`, `surface-elevated`
+- テキスト: `foreground`, `muted`
+- シャドウ: `shadow-pop`, `shadow-pop-hover`
+
+## Tailwind
+
+セマンティックカラーを使う: `primary`, `surface`, `muted`, `border`, `sky-soft` 等。ハードコードより CSS 変数経由のクラスを優先。
+
+## フォント
+
+Noto Sans JP（本文）、Quicksand（見出し）。`app/layout.tsx` で読み込み。

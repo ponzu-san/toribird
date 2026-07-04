@@ -1,0 +1,26 @@
+---
+description: Next.js / React の実装パターン
+globs: app/**/*.{tsx,ts},components/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+# Next.js / React
+
+- デフォルトは Server Component。インタラクションが必要なときだけ `"use client"`
+- データ取得: Server Component + `lib/db/*`
+- データ変更: Server Actions（`lib/actions/*`）
+- **Server Action を Client Component の props で関数として渡さない**。form `action` に bind する（`DeleteButton` 参照）
+- 管理画面の動的ページは `export const dynamic = "force-dynamic"`
+- キャッシュ更新は `revalidatePath`（カタログ変更時は `/parrots`, `/facilities` も再検証）
+
+## SEO
+
+`app/layout.tsx` に title / description あり。ページ追加時は `metadata` を適宜設定。sitemap・OGP 等は現時点では優先度低。
+
+## 認証（現状）
+
+| 種別 | 状態 |
+|------|------|
+| 管理者 | Supabase Auth + `admin_users` |
+| 一般ユーザー | 未実装 |
+| 投稿 | ログイン不要で `pending` insert |

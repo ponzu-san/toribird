@@ -26,7 +26,6 @@ async function seedParrots(): Promise<Map<string, string>> {
       .upsert(
         {
           name: detail.name,
-          english_name: detail.englishName,
           habitat: detail.habitat,
           description: detail.description,
           image_url: detail.imageUrl || null,
@@ -59,8 +58,7 @@ async function seedFacilities(parrotNameToId: Map<string, string>): Promise<Map<
           legacy_id: facility.id,
           name: facility.name,
           prefecture: facility.prefecture,
-          address: facility.address,
-          category: facility.category,
+          address: facility.address || null,
           website: facility.website || null,
           status: "published",
         },

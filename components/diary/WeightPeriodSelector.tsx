@@ -5,7 +5,7 @@ import type { WeightPeriod } from "@/types/diary";
 const PERIODS: { value: WeightPeriod; label: string }[] = [
   { value: 7, label: "1週間" },
   { value: 30, label: "1ヶ月" },
-  { value: 365, label: "1年" },
+  { value: 90, label: "3ヶ月" },
   { value: "all", label: "全期間" },
 ];
 

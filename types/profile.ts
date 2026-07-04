@@ -1,3 +1,5 @@
+import type { ParrotSex } from "@/types/health";
+
 export const PROFILE_DEFAULT_ID = "default";
 export const SPECIES_OTHER_ID = "other";
 
@@ -10,6 +12,10 @@ export type ParrotProfile = {
   name: string;
   speciesId: string;
   speciesCustom?: string;
+  sex?: ParrotSex;
+  birthday?: string;
+  adoptedOn?: string;
+  photoUrl?: string;
   bio?: string;
   updatedAt: string;
 };
@@ -18,5 +24,8 @@ export type ProfileFormData = {
   name: string;
   speciesId: string;
   speciesCustom?: string;
+  sex?: ParrotSex | "";
+  birthday?: string;
+  adoptedOn?: string;
   bio?: string;
 };

@@ -5,7 +5,6 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 type ParrotRow = {
   id: string;
   name: string;
-  english_name: string;
   habitat: string;
   description: string;
   image_url: string | null;
@@ -16,8 +15,7 @@ type FacilityRow = {
   id: string;
   name: string;
   prefecture: string;
-  address: string;
-  category: string;
+  address: string | null;
   website: string | null;
   status: CatalogStatus;
   facility_parrots: Array<{
@@ -30,7 +28,6 @@ function mapAdminParrot(row: ParrotRow): AdminParrot {
   return {
     id: row.id,
     name: row.name,
-    englishName: row.english_name,
     habitat: row.habitat,
     description: row.description,
     imageUrl: row.image_url ?? "",
@@ -45,8 +42,7 @@ function mapAdminFacility(row: FacilityRow): AdminFacility {
     id: row.id,
     name: row.name,
     prefecture: row.prefecture,
-    address: row.address,
-    category: row.category,
+    address: row.address ?? "",
     website: row.website ?? "",
     status: row.status,
     parrotIds: links.map(link => link.parrot_id),
@@ -66,7 +62,7 @@ export async function getAdminParrots(): Promise<AdminParrot[]> {
   const supabase = await getClient();
   const { data, error } = await supabase
     .from("parrots")
-    .select("id, name, english_name, habitat, description, image_url, status")
+    .select("id, name, habitat, description, image_url, status")
     .order("name");
 
   if (error) {
@@ -80,7 +76,7 @@ export async function getAdminParrot(id: string): Promise<AdminParrot | null> {
   const supabase = await getClient();
   const { data, error } = await supabase
     .from("parrots")
-    .select("id, name, english_name, habitat, description, image_url, status")
+    .select("id, name, habitat, description, image_url, status")
     .eq("id", id)
     .maybeSingle();
 
@@ -100,7 +96,6 @@ export async function getAdminFacilities(): Promise<AdminFacility[]> {
       name,
       prefecture,
       address,
-      category,
       website,
       status,
       facility_parrots (
@@ -126,7 +121,6 @@ export async function getAdminFacility(id: string): Promise<AdminFacility | null
       name,
       prefecture,
       address,
-      category,
       website,
       status,
       facility_parrots (
