@@ -50,8 +50,8 @@ export default function DiaryForm({ date, record, onSaved, onCancel }: DiaryForm
   };
 
   return (
-    <form onSubmit={handleSubmit} className="pb-4">
-      <div className="space-y-4">
+    <form onSubmit={handleSubmit} className="pb-2 lg:pb-4">
+      <div className="space-y-3 lg:space-y-4">
         <MoodPicker value={mood} onChange={setMood} disabled={isReadOnly} />
 
         <div>
@@ -74,17 +74,17 @@ export default function DiaryForm({ date, record, onSaved, onCancel }: DiaryForm
 
         <div>
           <label htmlFor="memo" className="mb-2 block text-sm font-semibold text-muted">
-            メモ
+            メモ（任意）
           </label>
           <textarea
             id="memo"
-            rows={3}
+            rows={2}
             maxLength={MAX_MEMO_LENGTH}
             placeholder="今日の様子、ごはん、おもちゃなど..."
             value={memo}
             onChange={e => setMemo(e.target.value)}
             disabled={isReadOnly}
-            className={`resize-none sm:min-h-[7.5rem] ${inputClass}`}
+            className={`resize-none lg:min-h-[7.5rem] ${inputClass}`}
           />
           <p className="mt-1.5 text-right text-xs text-muted">
             {memo.length}/{MAX_MEMO_LENGTH}
@@ -93,13 +93,11 @@ export default function DiaryForm({ date, record, onSaved, onCancel }: DiaryForm
 
         {error && <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800">{error}</div>}
 
-        {saveMessage && (
-          <div className="rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{saveMessage}</div>
-        )}
+        {saveMessage && <div className="rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{saveMessage}</div>}
       </div>
 
       {!isReadOnly && (
-        <div className="sticky bottom-20 z-30 -mx-1 mt-4 border-t border-border bg-surface-elevated pt-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:static lg:mx-0 lg:border-t-0 lg:bg-transparent lg:pt-0 lg:pb-0">
+        <div className="mt-4">
           <div className="flex gap-3">
             {onCancel && (
               <Button type="button" variant="secondary" onClick={onCancel} className="flex-1">

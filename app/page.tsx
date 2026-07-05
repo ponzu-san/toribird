@@ -55,9 +55,9 @@ export default function TodayPage() {
 
   return (
     <PageShell width="narrow">
-      <div className="space-y-4">
+      <div className="space-y-3 lg:space-y-4">
         <header>
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between lg:mb-3">
             <div className="flex items-center justify-center gap-2">
               <p className="text-sm font-bold text-primary">今日</p>
               <GuestTrialBadge />
