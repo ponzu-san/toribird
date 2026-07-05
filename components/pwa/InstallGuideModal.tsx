@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
-import type { InstallPlatform } from "@/lib/hooks/usePwaInstall";
+import { useEffect, type ReactNode } from "react";
+import type { InstallGuideKey } from "@/lib/hooks/usePwaInstall";
 
 interface InstallGuideModalProps {
   isOpen: boolean;
   onClose: () => void;
-  defaultTab?: InstallPlatform;
+  guideKey: InstallGuideKey;
 }
-
-type GuideTab = "ios" | "android";
 
 function ShareIcon() {
   return (
@@ -42,6 +40,14 @@ function DotsVerticalIcon() {
   );
 }
 
+function ChevronDownIcon() {
+  return (
+    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+}
+
 function CheckIcon() {
   return (
     <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,25 +56,58 @@ function CheckIcon() {
   );
 }
 
-const STEPS: Record<GuideTab, { icon: ReactNode; text: string }[]> = {
-  ios: [
-    { icon: <ShareIcon />, text: "画面下部（PC版は上部アドレスバー横）の「共有」ボタンをタップ" },
-    { icon: <PlusSquareIcon />, text: "メニューを下にスクロールし「ホーム画面に追加」をタップ" },
-    { icon: <CheckIcon />, text: "右上の「追加」をタップすると完了です" },
-  ],
-  android: [
-    { icon: <DotsVerticalIcon />, text: "右上の「⋮」（メニュー）をタップ" },
-    { icon: <PlusSquareIcon />, text: "「アプリをインストール」または「ホーム画面に追加」をタップ" },
-    { icon: <CheckIcon />, text: "「インストール」をタップすると完了です" },
-  ],
+type GuideStep = { icon: ReactNode; text: string };
+
+const GUIDE_CONTENT: Record<InstallGuideKey, { title: string; steps: GuideStep[]; note?: string }> = {
+  iosSafari: {
+    title: "iPhone（Safari）での追加方法",
+    steps: [
+      { icon: <DotsVerticalIcon />, text: "画面右下の「…」をタップ" },
+      { icon: <ShareIcon />, text: "「共有」ボタン（□に↑）をタップ" },
+      { icon: <ChevronDownIcon />, text: "「∨ 表示を増やす」をタップ" },
+      { icon: <PlusSquareIcon />, text: "「ホーム画面に追加」をタップ" },
+      { icon: <CheckIcon />, text: "右上の「追加」をタップ" },
+    ],
+    note: "iOS のバージョンや設定によって表示が異なる場合があります",
+  },
+  iosChrome: {
+    title: "iPhone（Chrome）での追加方法",
+    steps: [
+      { icon: <ShareIcon />, text: "画面右上の「共有」ボタン（□に↑）をタップ" },
+      { icon: <ChevronDownIcon />, text: "「表示を増やす」をタップ" },
+      { icon: <PlusSquareIcon />, text: "「ホーム画面に追加」をタップ" },
+      { icon: <CheckIcon />, text: "「追加」をタップ" },
+    ],
+    note: "iOS のバージョンや設定によって表示が異なる場合があります",
+  },
+  androidManual: {
+    title: "Android での追加方法",
+    steps: [
+      { icon: <DotsVerticalIcon />, text: "右上の「⋮」（メニュー）をタップ" },
+      { icon: <PlusSquareIcon />, text: "「アプリをインストール」または「ホーム画面に追加」をタップ" },
+      { icon: <CheckIcon />, text: "「インストール」をタップ" },
+    ],
+  },
 };
 
-export default function InstallGuideModal({ isOpen, onClose, defaultTab = "ios" }: InstallGuideModalProps) {
-  const [tab, setTab] = useState<GuideTab>(defaultTab === "android" ? "android" : "ios");
+function StepList({ steps }: { steps: GuideStep[] }) {
+  return (
+    <ol className="space-y-3">
+      {steps.map((step, index) => (
+        <li key={index} className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-primary/30 bg-sky-soft text-primary">
+            {step.icon}
+          </span>
+          <p className="pt-2 text-sm leading-relaxed text-foreground">{step.text}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
 
+export default function InstallGuideModal({ isOpen, onClose, guideKey }: InstallGuideModalProps) {
   useEffect(() => {
     if (isOpen) {
-      setTab(defaultTab === "android" ? "android" : "ios");
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -77,7 +116,7 @@ export default function InstallGuideModal({ isOpen, onClose, defaultTab = "ios" 
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, defaultTab]);
+  }, [isOpen]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -95,16 +134,18 @@ export default function InstallGuideModal({ isOpen, onClose, defaultTab = "ios" 
 
   if (!isOpen) return null;
 
+  const content = GUIDE_CONTENT[guideKey];
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center" onClick={onClose}>
       <div className="absolute inset-0 bg-foreground/50" />
 
       <div
-        className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-border bg-surface-elevated shadow-pop-hover"
+        className="relative z-10 max-h-[85vh] w-full max-w-md overflow-y-auto rounded-3xl border border-border bg-surface-elevated shadow-pop-hover"
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-border px-4 py-3">
-          <h2 className="text-lg font-bold text-foreground">ホーム画面への追加方法</h2>
+        <div className="sticky top-0 flex items-center justify-between border-b border-border bg-surface-elevated px-4 py-3">
+          <h2 className="text-lg font-bold text-foreground">{content.title}</h2>
           <button
             onClick={onClose}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-muted transition hover:border-primary hover:bg-sky-soft hover:text-primary"
@@ -116,37 +157,10 @@ export default function InstallGuideModal({ isOpen, onClose, defaultTab = "ios" 
           </button>
         </div>
 
-        <div className="flex gap-2 px-4 pt-4">
-          <button
-            type="button"
-            onClick={() => setTab("ios")}
-            className={`flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition ${
-              tab === "ios" ? "bg-primary text-white shadow-pop" : "border border-border text-muted hover:bg-sky-soft"
-            }`}
-          >
-            iPhone（Safari）
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("android")}
-            className={`flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition ${
-              tab === "android" ? "bg-primary text-white shadow-pop" : "border border-border text-muted hover:bg-sky-soft"
-            }`}
-          >
-            Android（Chrome）
-          </button>
+        <div className="p-4">
+          <StepList steps={content.steps} />
+          {content.note && <p className="mt-4 text-xs text-muted">{content.note}</p>}
         </div>
-
-        <ol className="space-y-4 p-4">
-          {STEPS[tab].map((step, index) => (
-            <li key={index} className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-primary/30 bg-sky-soft text-primary">
-                {step.icon}
-              </span>
-              <p className="pt-2 text-sm leading-relaxed text-foreground">{step.text}</p>
-            </li>
-          ))}
-        </ol>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -8,12 +8,29 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export type InstallPlatform = "ios" | "android" | "desktop";
+export type InstallGuideKey = "iosSafari" | "iosChrome" | "androidManual";
 
-function detectPlatform(): InstallPlatform {
-  const ua = navigator.userAgent;
+function detectPlatform(ua: string): InstallPlatform {
   if (/iPhone|iPad|iPod/.test(ua)) return "ios";
   if (/Android/.test(ua)) return "android";
   return "desktop";
+}
+
+function detectIosBrowser(ua: string): "safari" | "chrome" | "other" {
+  if (/CriOS/.test(ua)) return "chrome";
+  if (/Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua)) return "safari";
+  return "other";
+}
+
+function resolveGuideKey(platform: InstallPlatform, canInstall: boolean, ua: string): InstallGuideKey | null {
+  if (platform === "desktop") return null;
+  if (canInstall) return null;
+  if (platform === "ios") {
+    const browser = detectIosBrowser(ua);
+    return browser === "chrome" ? "iosChrome" : "iosSafari";
+  }
+  if (platform === "android") return "androidManual";
+  return null;
 }
 
 function isStandalone(): boolean {
@@ -27,7 +44,7 @@ export function usePwaInstall() {
   const [platform, setPlatform] = useState<InstallPlatform>("desktop");
 
   useEffect(() => {
-    setPlatform(detectPlatform());
+    setPlatform(detectPlatform(navigator.userAgent));
     setIsInstalled(isStandalone());
 
     const handleBeforeInstallPrompt = (event: Event) => {
@@ -47,6 +64,13 @@ export function usePwaInstall() {
     };
   }, []);
 
+  const canInstall = deferredPrompt !== null;
+
+  const guideKey = useMemo(
+    () => resolveGuideKey(platform, canInstall, typeof navigator !== "undefined" ? navigator.userAgent : ""),
+    [platform, canInstall],
+  );
+
   const promptInstall = useCallback(async () => {
     if (!deferredPrompt) return false;
     await deferredPrompt.prompt();
@@ -56,9 +80,10 @@ export function usePwaInstall() {
   }, [deferredPrompt]);
 
   return {
-    canInstall: deferredPrompt !== null,
+    canInstall,
     isInstalled,
     platform,
+    guideKey,
     promptInstall,
   };
 }
