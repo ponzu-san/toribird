@@ -7,6 +7,7 @@ import { adminInputClass, adminLabelClass } from "@/components/admin/adminFormSt
 import Button from "@/components/ui/Button";
 import PageShell from "@/components/ui/PageShell";
 import Card from "@/components/ui/Card";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function AdminLoginForm() {
   const [state, formAction, isPending] = useActionState<AuthActionResult, FormData>(loginAdmin, {});
@@ -32,7 +33,7 @@ export default function AdminLoginForm() {
             <label htmlFor="password" className={adminLabelClass}>
               パスワード
             </label>
-            <input id="password" name="password" type="password" autoComplete="current-password" required className={adminInputClass} />
+            <PasswordInput id="password" name="password" autoComplete="current-password" required inputClassName={adminInputClass} />
           </div>
 
           {state.error && <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800">{state.error}</div>}

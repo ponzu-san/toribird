@@ -7,6 +7,7 @@ import { authInputClass } from "@/lib/auth/formStyles";
 import Button from "@/components/ui/Button";
 import PageShell from "@/components/ui/PageShell";
 import Card from "@/components/ui/Card";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function ResetPasswordForm() {
   const [state, formAction, isPending] = useActionState<AuthActionResult, FormData>(updatePassword, {});
@@ -25,14 +26,13 @@ export default function ResetPasswordForm() {
             <label htmlFor="password" className="mb-2 block text-sm font-semibold text-muted">
               新しいパスワード
             </label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               autoComplete="new-password"
               required
               minLength={8}
-              className={authInputClass}
+              inputClassName={authInputClass}
             />
           </div>
 
@@ -40,14 +40,13 @@ export default function ResetPasswordForm() {
             <label htmlFor="passwordConfirm" className="mb-2 block text-sm font-semibold text-muted">
               新しいパスワード（確認）
             </label>
-            <input
+            <PasswordInput
               id="passwordConfirm"
               name="passwordConfirm"
-              type="password"
               autoComplete="new-password"
               required
               minLength={8}
-              className={authInputClass}
+              inputClassName={authInputClass}
             />
           </div>
 

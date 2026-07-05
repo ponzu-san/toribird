@@ -6,6 +6,7 @@ import { signupUser, type AuthActionResult } from "@/lib/actions/userAuth";
 import Button from "@/components/ui/Button";
 import PageShell from "@/components/ui/PageShell";
 import Card from "@/components/ui/Card";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 const inputClass =
   "w-full rounded-2xl border border-border bg-surface-elevated px-3 py-2.5 text-foreground placeholder:text-muted transition focus:border-primary focus:bg-surface-elevated focus:outline-none focus:ring-2 focus:ring-primary/25 lg:px-4";
@@ -34,7 +35,7 @@ export default function SignupForm() {
             <label htmlFor="password" className="mb-2 block text-sm font-semibold text-muted">
               パスワード（8文字以上）
             </label>
-            <input id="password" name="password" type="password" autoComplete="new-password" required minLength={8} className={inputClass} />
+            <PasswordInput id="password" name="password" autoComplete="new-password" required minLength={8} inputClassName={inputClass} />
           </div>
 
           {state.error && <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800">{state.error}</div>}

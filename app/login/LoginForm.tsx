@@ -2,14 +2,18 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { loginUser, type AuthActionResult } from "@/lib/actions/userAuth";
 import { authInputClass } from "@/lib/auth/formStyles";
 import Button from "@/components/ui/Button";
 import PageShell from "@/components/ui/PageShell";
 import Card from "@/components/ui/Card";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function LoginForm() {
   const [state, formAction, isPending] = useActionState<AuthActionResult, FormData>(loginUser, {});
+  const searchParams = useSearchParams();
+  const isRegisteredPending = searchParams.get("registered") === "pending";
 
   return (
     <PageShell width="narrow" className="lg:pb-8">
@@ -19,6 +23,12 @@ export default function LoginForm() {
           <h1 className="mt-1 text-2xl font-bold text-foreground">ログイン</h1>
           <p className="mt-2 text-sm text-muted">クラウド同期のためにログインします</p>
         </header>
+
+        {isRegisteredPending && (
+          <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+            アカウントを作成しました。確認メールのリンクをクリックしてから、ログインしてください。
+          </div>
+        )}
 
         <form action={formAction} className="space-y-4">
           <div>
@@ -32,7 +42,7 @@ export default function LoginForm() {
             <label htmlFor="password" className="mb-2 block text-sm font-semibold text-muted">
               パスワード
             </label>
-            <input id="password" name="password" type="password" autoComplete="current-password" required className={authInputClass} />
+            <PasswordInput id="password" name="password" autoComplete="current-password" required inputClassName={authInputClass} />
             <div className="mt-2 flex flex-col gap-1 text-xs">
               <Link href="/login/forgot-password" className="text-primary underline">
                 パスワードをお忘れの方

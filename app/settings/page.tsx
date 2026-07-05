@@ -6,6 +6,7 @@ import { getUserSession } from "@/lib/auth/session";
 import PageShell from "@/components/ui/PageShell";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import InstallAppCard from "@/components/pwa/InstallAppCard";
 
 export default async function SettingsPage() {
   const session = await getUserSession();
@@ -74,6 +75,10 @@ export default async function SettingsPage() {
               <p className="text-sm text-muted">未登録（体験モード）</p>
             )}
           </div>
+        </Card>
+
+        <Card>
+          <InstallAppCard />
         </Card>
 
         <Card>

@@ -84,7 +84,7 @@ function SettingsNavButton({ variant }: { variant: "icon" | "text" }) {
 export default function Navigation() {
   const pathname = usePathname();
 
-  if (pathname.startsWith("/admin") || pathname === "/welcome" || pathname === "/login" || pathname === "/signup") {
+  if (pathname.startsWith("/admin") || pathname === "/welcome") {
     return null;
   }
 

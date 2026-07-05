@@ -48,7 +48,7 @@ export async function signupUser(_prev: AuthActionResult, formData: FormData): P
     return { error: "Supabase が設定されていません" };
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -59,7 +59,12 @@ export async function signupUser(_prev: AuthActionResult, formData: FormData): P
     return { error: "アカウント作成に失敗しました。別のメールアドレスをお試しください" };
   }
 
-  redirect("/");
+  if (data.session) {
+    revalidatePath("/");
+    redirect("/");
+  }
+
+  redirect("/login?registered=pending");
 }
 
 export async function logoutUser() {
